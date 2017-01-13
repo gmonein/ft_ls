@@ -6,7 +6,7 @@
 #    By: gmonein <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/12/08 06:09:56 by gmonein           #+#    #+#              #
-#    Updated: 2017/01/12 12:19:18 by gmonein          ###   ########.fr        #
+#    Updated: 2017/01/13 23:02:02 by gmonein          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,7 @@ SRC = ft_bzero.c \
 	  ft_strsub.c \
 	  ft_strdel.c \
 	  ft_stradd.c \
+	  ft_strcmp.c \
 
 OBJ = $(SRC:.c=.o)
 

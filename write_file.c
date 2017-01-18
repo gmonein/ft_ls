@@ -6,25 +6,12 @@
 /*   By: gmonein <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/12 17:22:43 by gmonein           #+#    #+#             */
-/*   Updated: 2017/01/13 20:00:21 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/18 02:01:56 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-void			print_right(struct stat *filestat)
-{
-	write(1, (S_ISDIR(filestat->st_mode) ? "d" : "-"), 1);
-	write(1, (filestat->st_mode & S_IRUSR ? "r" : "-"), 1);
-	write(1, (filestat->st_mode & S_IWUSR ? "w" : "-"), 1);
-	write(1, (filestat->st_mode & S_IXUSR ? "x" : "-"), 1);
-	write(1, (filestat->st_mode & S_IRGRP ? "r" : "-"), 1);
-	write(1, (filestat->st_mode & S_IWGRP ? "w" : "-"), 1);
-	write(1, (filestat->st_mode & S_IXGRP ? "x" : "-"), 1);
-	write(1, (filestat->st_mode & S_IROTH ? "r" : "-"), 1);
-	write(1, (filestat->st_mode & S_IWOTH ? "w" : "-"), 1);
-	write(1, (filestat->st_mode & S_IXOTH ? "x" : "-"), 1);
-}
 
 
 /*

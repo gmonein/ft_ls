@@ -6,7 +6,7 @@
 /*   By: gmonein <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/13 17:11:02 by gmonein           #+#    #+#             */
-/*   Updated: 2017/01/14 00:36:07 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/18 02:15:11 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,10 @@ int		ft_ls(char *path)
 			print_name_lst(file->begin, len);
 			write(1, "\n",1);
 		}
-		printf("\n%s: \ntotal %d\n", toread->begin->next->content, total);
+		write(1, "\n", 1);
+		write(1, toread->begin->next->content, ft_strlen(toread->begin->next->content));
+		write(1, ":\n", 2);
+		printf("total %d\n",  total);
 		ft_ls(toread->begin->next->content);
 		ft_delnode(toread->begin);
 	}

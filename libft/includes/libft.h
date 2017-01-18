@@ -6,7 +6,7 @@
 /*   By: gmonein <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/08 06:10:07 by gmonein           #+#    #+#             */
-/*   Updated: 2017/01/13 23:01:33 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/18 01:44:33 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,7 @@ char	*ft_strdup(char *s);
 void	ft_strdel(char **s);
 char	*ft_stradd(char *str, char c, int a);
 int		ft_strcmp(char *s1, char *s2);
+void	ft_putnbr(int c);
+char	**ft_strsplit(char const *s, char c);
 
 #endif

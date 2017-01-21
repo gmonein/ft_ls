@@ -6,7 +6,7 @@
 /*   By: gmonein <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/16 18:52:51 by gmonein           #+#    #+#             */
-/*   Updated: 2017/01/18 11:19:03 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/21 08:36:50 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 typedef struct		l_file
 {
 	char			*name;
+	char			*path;
 	int				id;
 	int				total;
 	int				col_one;
@@ -25,6 +26,14 @@ typedef struct		l_file
 	struct l_file	*next;
 	struct l_file	*begin;
 }					t_file;
+
+typedef struct		s_arg
+{
+	int			a;
+	int			l;
+	int			r;
+	int			mr;
+}					t_arg;
 
 char	*ft_make_path(char *start, char *end)
 {
@@ -69,7 +78,7 @@ struct l_file		*lst_sort_place(struct l_file *lst, char *str, int r)
 	{
 		tmp = lst;
 		lst = lst->next;
-		if (lst->name != NULL && (ft_strcmp(str, lst->name) * r) < 0)
+		if (lst->name != NULL && (ft_strcmp(str, lst->name) * r) > 0)
 			return (tmp);
 	}
 	return (tmp->next);
@@ -86,7 +95,7 @@ struct l_file		*ft_init_lst(void)
 	lst->filestat = NULL;
 	lst->len_name = 1;
 	lst->id = 0;
-	lst->col_one = 1;
+	lst->col_one = 0;
 	lst->col_four = 1;
 	lst->total = 0;
 	lst->begin = lst;
@@ -110,13 +119,13 @@ struct l_file		*ft_bet_node(struct l_file *lst)
 	return (lst);
 }
 
-void	ft_add_dir(struct l_file *lst, char *name, struct stat *filestat, int r)
+void	ft_add_dir(struct l_file *lst, char *name, struct stat *filestat, t_arg *arg)
 {
 	struct l_file	*tmp;
 
 	tmp = lst->begin;
 	if (lst->begin->next != NULL)
-		lst = lst_sort_place(lst->begin, name, r);
+		lst = lst_sort_place(lst->begin, name, arg->r);
 	if (lst->next == NULL)
 	{
 		lst->next = (struct l_file *)malloc(sizeof(struct l_file));
@@ -130,7 +139,7 @@ void	ft_add_dir(struct l_file *lst, char *name, struct stat *filestat, int r)
 	lst->name = ft_strdup(name);
 	lst->begin = tmp;
 	lst->filestat = filestat;
-	if ((lst->col_one = ft_gil(filestat->st_nlink)) > lst->begin->col_one)
+	if ((lst->col_one = ft_gil(filestat->st_nlink)) > lst->begin->col_one && ((arg->a == 0 && strcmp(lst->name, ".") != 0 && strcmp(lst->name, "..") != 0) || arg->a == 1))
 		lst->begin->col_one = lst->col_one;
 	if ((lst->col_four = ft_gil(filestat->st_size)) > lst->begin->col_four)
 		lst->begin->col_four = lst->col_four;
@@ -139,13 +148,13 @@ void	ft_add_dir(struct l_file *lst, char *name, struct stat *filestat, int r)
 	lst->begin->total += lst->filestat->st_blocks;
 }
 
-void	ft_add_file(struct l_file *lst, char *name, struct stat *filestat, int r)
+void	ft_add_file(struct l_file *lst, char *name, struct stat *filestat, t_arg *arg)
 {
 	struct l_file	*tmp;
 
 	tmp = lst->begin;
 	if (lst->begin->next != NULL)
-		lst = lst_sort_place(lst->begin, name, r);
+		lst = lst_sort_place(lst->begin, name, arg->r);
 	if (lst->next == NULL)
 	{
 		lst->next = (struct l_file *)malloc(sizeof(struct l_file));
@@ -159,7 +168,7 @@ void	ft_add_file(struct l_file *lst, char *name, struct stat *filestat, int r)
 	lst->begin = tmp;
 	lst->dir = NULL;
 	lst->filestat = filestat;
-	if ((lst->col_one = ft_gil(filestat->st_nlink)) > lst->begin->col_one)
+	if ((lst->col_one = ft_gil(filestat->st_nlink)) > lst->begin->col_one && ((arg->a == 0 && strcmp(lst->name, ".") != 0 && strcmp(lst->name, "..") != 0) || arg->a == 1))
 		lst->begin->col_one = lst->col_one;
 	if ((lst->col_four = ft_gil(filestat->st_size)) > lst->begin->col_four)
 		lst->begin->col_four = lst->col_four;
@@ -168,30 +177,39 @@ void	ft_add_file(struct l_file *lst, char *name, struct stat *filestat, int r)
 	lst->begin->total += lst->filestat->st_blocks;
 }
 
-int		ft_ls(char *path, struct l_file *lst, struct l_file *begin, int r)
+int		ft_ls(char *path, struct l_file *lst, struct l_file *begin, t_arg *arg)
 {
 	struct dirent	*stc;
 	DIR				*fd;
 	struct stat		*filestat;
+	char			*tmppath;
 
-	fd = opendir(path);
+	if (!(fd = opendir(path)))
+	{
+		write(1, "ls: ", 4);
+		perror(path);
+		return (0);
+	}
 	while ((stc = readdir(fd)) != NULL)
 	{
 		filestat = (struct stat *)malloc(sizeof(struct stat));
-		stat(ft_make_path(path, stc->d_name), filestat);
+		tmppath = ft_make_path(path, stc->d_name);
+		stat(tmppath, filestat);
 		if (ft_strcmp(".", stc->d_name) != 0
 		&& ft_strcmp("..", stc->d_name) != 0 && S_ISDIR(filestat->st_mode))
-			ft_add_dir(lst, stc->d_name, filestat, r);
+			ft_add_dir(lst, stc->d_name, filestat, arg);
 		else
-			ft_add_file(lst, stc->d_name, filestat, r);
+			ft_add_file(lst, stc->d_name, filestat, arg);
+		lst->path = tmppath;
+		lst->begin->path = path;
 		if (lst->next)
 			lst = lst->next;
 	}
 	lst = begin;
-	while (lst->next != NULL)
+	while (lst->next != NULL && arg->mr == 1)
 	{
 		if (lst->id == 1)
-			ft_ls(ft_make_path(path, lst->name), lst->dir, lst->dir, r);
+			ft_ls(ft_make_path(path, lst->name), lst->dir, lst->dir, arg);
 		lst = lst->next;
 	}
 	closedir(fd);
@@ -223,6 +241,12 @@ void			print_time(char *str)
 	write(1, res[2], ft_strlen(res[2]));
 	write(1, " ", 1);
 	write(1, res[3], 5);
+	free(res[0]);
+	free(res[1]);
+	free(res[2]);
+	free(res[3]);
+	free(res[4]);
+	free(res);
 }
 
 void			print_l(struct l_file *lst, int a)
@@ -230,8 +254,9 @@ void			print_l(struct l_file *lst, int a)
 	write(1, "total ", 6);
 	ft_putnbr(lst->begin->total);
 	write(1, "\n", 1);
-	while (lst != NULL)
+	while (lst->next != NULL)
 	{
+	lst = lst->next;
 		if (a == 1 || (a == 0 && lst->name[0] != '.'))
 		{
 			print_right(lst->filestat);
@@ -249,7 +274,6 @@ void			print_l(struct l_file *lst, int a)
 			write(1, lst->name, ft_strlen(lst->name));
 			write(1, "\n", 1);
 		}
-		lst = lst->next;
 	}
 }
 
@@ -259,22 +283,23 @@ void			print_nl(struct l_file *lst, int a)
 	int		j;
 
 	i = 0;
-	while (lst != NULL)
+	while (lst->next != NULL)
 	{
+	lst = lst->next;
 		if (a == 1 || (a == 0 && lst->name[0] != '.'))
 		{
 			write(1, lst->name, lst->len_name);
-			j = lst->begin->len_name - lst->len_name + 2;
-			while (lst->next != NULL && j--)
-				write(1, " ", 1);
-			i++;
-			if (i % 5 == 0)
+//			j = lst->begin->len_name - lst->len_name + 2;
+//			while (lst->next != NULL && j--)
+//				write(1, " ", 1);
+//
+//			i++;
+//			if (i % 5 == 0)
 				write(1, "\n", 1);
 		}
-		lst = lst->next;
 	}
-	if (i % 5 != 0)
-		write(1, "\n", 1);
+//	if (i % 5 != 0)
+//		write(1, "\n", 1);
 }
 
 int					ft_error(int e, char s)
@@ -312,28 +337,86 @@ int					ft_get_arg(int ac, char **av, char **arg)
 	return (1);
 }
 
-struct l_file		*ft_get_dir(int ac, char **av)
+struct l_file		*ft_get_dir(int ac, char **av, t_arg *sarg)
 {
 	int				i;
+	int				r;
 	struct l_file	*lst;
 	struct l_file	*tmp;
 
 	i = 1;
 	lst = ft_init_lst();
 	tmp = lst;
-	while (av[i] && av[i][0] == '-')
+	r = ac - 2;
+	while (av[i] && av[i][0] == '-' && r++)
 		i++;
-	if (!av[i])
-		lst->name = ft_strdup(".");
-	while (av[i])
+	if (i == ac - 1 || ac == 1)
 	{
 		lst->next = ft_init_lst();
 		lst = lst->next;
-		lst->name = ft_strdup(av[i]);
-		i++;
+		lst->name = ft_strdup(".");
 	}
+	else
+		while ((sarg->r == -1 && av[i]) || (sarg->r == 1 && av[r] && r != i - 1))
+		{
+			lst->next = ft_init_lst();
+			lst = lst->next;
+			lst->name = ft_strdup(av[(sarg->r == 1 ? r : i)]);
+			(sarg->r == 1 ? r-- : i++);
+		}
 	lst->next = NULL;
 	return (tmp);
+}
+
+void	ft_free_tree(struct l_file *lst)
+{
+	if (lst->next)
+	{
+		if (lst->dir != NULL)
+			ft_free_tree(lst->dir);
+		ft_free_tree(lst->next);
+	}
+	if (lst->filestat)
+		free(lst->filestat);
+	if (lst->name)
+		free(lst->name);
+	free(lst);
+}
+
+void	ft_print_mr(struct l_file *lst, t_arg *sarg, int repeat)
+{
+	struct l_file	*toread;
+	struct l_file	*tmpt;
+	struct l_file	*tmpl;
+
+	tmpl = lst;
+	toread = ft_init_lst();
+	tmpt = toread;
+	while (lst && lst->next != NULL)
+	{
+		if (sarg->mr == 1 && lst->id == 1 && (sarg->a == 1 || (sarg->a == 0 && lst->name[0] != '.')))
+		{
+			toread->next = ft_init_lst();
+			toread->name = ft_strdup(lst->begin->path);
+			toread = toread->next;
+			toread->dir = lst->dir;
+		}
+		lst = lst->next;
+	}
+	toread = tmpt;
+	if (repeat != 0)
+	{
+		write(1, tmpl->path, ft_strlen(tmpl->path));
+		write(1, ":\n", 2);
+	}
+	(sarg->l == 1 ? print_l(tmpl, sarg->a) : print_nl(tmpl, sarg->a));
+	if (toread->next != NULL)
+		write(1, "\n", 1);
+	while (toread->next != NULL)
+	{
+		toread = toread->next;
+		ft_print_mr(toread->dir, sarg, 1);
+	}
 }
 
 int		main(int ac, char **av)
@@ -343,27 +426,32 @@ int		main(int ac, char **av)
 	long long		cnt;
 	int				tmp;
 	char			*arg;
-	int				a;
-	int				r;
+	int				repeat;
+	t_arg			sarg;
 
+	repeat = 0;
 	cnt = 0;
-	lst = ft_init_lst();
 	ft_get_arg(ac, av, &arg);
-	toread = ft_get_dir(ac, av);
-	r = (ft_strchr(arg, 'r') != NULL ? -1 : 1);
-	a = (ft_strchr(arg, 'a') != NULL ? 1 : 0);
-	if (toread->next == NULL)
-	{
-		ft_ls(toread->name, lst, lst, r);
-		(ft_strchr(arg, 'l') != NULL ? print_l(lst, a) : print_nl(lst, a));
-	}
-	else while (toread != NULL)
+	sarg.r = (ft_strchr(arg, 'r') != NULL ? 1 : -1);
+	sarg.a = (ft_strchr(arg, 'a') != NULL ? 1 : 0);
+	sarg.l = (ft_strchr(arg, 'l') != NULL ? 1 : 0);
+	sarg.mr = (ft_strchr(arg, 'R') != NULL ? 1 : 0);
+	lst = ft_init_lst();
+	toread = ft_get_dir(ac, av, &sarg);
+	while (toread->next != NULL)
 	{
 		toread = toread->next;
-		write(1, toread->name, ft_strlen(toread->name));
-		write(1, ":\n", 2);
-		ft_ls(toread->name, lst, lst, r);
-		(ft_strchr(arg, 'l') != NULL ? print_l(lst, a) : print_nl(lst, a));
+		if (ft_ls(toread->name, lst, lst, &sarg) == 1)
+		{
+			ft_print_mr(lst, &sarg, repeat);
+			ft_free_tree(lst->begin);
+			lst = ft_init_lst();
+			if (toread->next != NULL)
+				write(1, "\n", 1);
+		}
+		else
+			repeat = 1;
 	}
+	ft_free_tree(toread);
 	return (0);
 }

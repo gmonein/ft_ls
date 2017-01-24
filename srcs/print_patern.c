@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/22 06:30:03 by marvin            #+#    #+#             */
-/*   Updated: 2017/01/22 06:30:03 by marvin           ###   ########.fr       */
+/*   Updated: 2017/01/24 03:17:19 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void			print_l(struct l_file *lst, int a)
 void			print_nl(struct l_file *lst, int a)
 {
 	int		i;
-	int		j;
+//	int		j;
 
 	i = 0;
 	while (lst->next != NULL)
@@ -65,10 +65,23 @@ void			print_nl(struct l_file *lst, int a)
 //		write(1, "\n", 1);
 }
 
-void        ft_print(struct l_file *lst, t_arg *srag)
+void        ft_print(struct l_file *lst, t_arg *sarg)
 {
-    if (sarg->l == 1)
-        print_l(lst, sarg->a);
-    if (sarg->l != 1)
-        print_nl(lst, sarg->a);
+	static int		first_line;
+
+	if ((lst->begin->path[2] != '.' && sarg->a == 0) || sarg->a == 1)
+	{
+		if (first_line != 1)
+			first_line = 1;
+		else
+		{
+			write(1, "\n", 1);
+			write(1, lst->begin->path, ft_strlen(lst->begin->path));
+			write(1, ":\n", 2);
+		}
+		if (sarg->l == 1)
+		    print_l(lst, sarg->a);
+		if (sarg->l != 1)
+		    print_nl(lst, sarg->a);
+	}
 }

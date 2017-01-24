@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/12 11:29:33 by gmonein           #+#    #+#             */
-/*   Updated: 2017/01/22 08:34:14 by marvin           ###   ########.fr       */
+/*   Updated: 2017/01/24 03:26:38 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,20 @@ typedef struct		s_arg
 	int			t;
 }					t_arg;
 
-int				ft_error(int e, char s);
+void				*ft_memset(void *b, int c, size_t len);
+void				ft_bzero(void *s, size_t n);
+void				*ft_memalloc(size_t size);
+char				*ft_strsub(char const *s, unsigned int start, size_t len);
+char				**ft_strsplit(char const *s, char c);
+char				*ft_strnew(size_t size);
+int					ft_error(int e, char s);
 size_t				ft_strlen(const char *s);
 char				*ft_strdup(char *src);
 int					ft_strcmp(char *s1, char *s2);
 char				*ft_strchr(const char *str, int c);
 char				*ft_stradd(char *str, char c, int a);
 void				ft_putnbr(int n);
-struct l_file		*lst_sort_place(struct l_file *lst, char *str, t_arg *sarg, struct stat *filestat);
+struct l_file		*lst_sort_place(t_file *lst, char *str, t_arg *sarg, struct stat *filestat);
 struct l_file		*ft_init_lst(void);
 struct l_file		*ft_bet_node(struct l_file *lst);
 void				ft_add_dir(struct l_file *lst, char *name, struct stat *filestat, t_arg *arg);

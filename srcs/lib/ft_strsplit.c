@@ -6,11 +6,11 @@
 /*   By: gmonein <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/13 23:24:24 by gmonein           #+#    #+#             */
-/*   Updated: 2016/11/15 01:07:47 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/24 02:26:28 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_ls.h"
 
 static int		ft_count_word(char const *s, char c)
 {

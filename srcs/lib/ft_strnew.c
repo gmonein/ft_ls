@@ -1,32 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_stradd.c                                        :+:      :+:    :+:   */
+/*   ft_strnew.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gmonein <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/01/12 12:03:34 by gmonein           #+#    #+#             */
-/*   Updated: 2017/01/12 12:18:18 by gmonein          ###   ########.fr       */
+/*   Created: 2016/12/08 06:09:49 by gmonein           #+#    #+#             */
+/*   Updated: 2017/01/24 02:26:58 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_ls.h"
 
-char	*ft_stradd(char *str, char c, int a)
+char	*ft_strnew(size_t size)
 {
-	int		len;
-	char	*new;
-
-	len = ft_strlen(str) + 1;
-	new = (char *)malloc(sizeof(char) * (len + 1));
-	new[len--] = '\0';
-	new[len--] = c;
-	while (len != -1)
-	{
-		new[len] = str[len];
-		len--;
-	}
-	if (a == 1)
-		free(str);
-	return (new);
+	return ((char *)ft_memalloc(size + 1));
 }

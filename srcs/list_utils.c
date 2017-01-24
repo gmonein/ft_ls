@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/22 06:25:16 by marvin            #+#    #+#             */
-/*   Updated: 2017/01/22 06:25:16 by marvin           ###   ########.fr       */
+/*   Updated: 2017/01/24 02:45:32 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ struct l_file		*lst_sort_place(struct l_file *lst, char *str, t_arg *sarg, struc
 		lst = lst->next;
 		if (sarg->t != 1 && lst->name != NULL && (ft_strcmp(str, lst->name) * sarg->r) > 0)
 			return (tmp);
-		if (sarg->t == 1 && lst->filestat->st_mtim.tv_sec < filestat->st_mtim.tv_sec)
+		if (sarg->t == 1 && lst->filestat->st_mtime < filestat->st_mtime)
 			return (tmp);
 	}
 	return (tmp->next);
@@ -84,7 +84,7 @@ void	ft_add_dir(struct l_file *lst, char *name, struct stat *filestat, t_arg *ar
 	lst->name = ft_strdup(name);
 	lst->begin = tmp;
 	lst->filestat = filestat;
-	if ((lst->col_one = ft_gil(filestat->st_nlink)) > lst->begin->col_one && ((arg->a == 0 && strcmp(lst->name, ".") != 0 && strcmp(lst->name, "..") != 0) || arg->a == 1))
+	if ((lst->col_one = ft_gil(filestat->st_nlink)) > lst->begin->col_one && ((arg->a == 0 && ft_strcmp(lst->name, ".") != 0 && ft_strcmp(lst->name, "..") != 0) || arg->a == 1))
 		lst->begin->col_one = lst->col_one;
 	if ((lst->col_four = ft_gil(filestat->st_size)) > lst->begin->col_four)
 		lst->begin->col_four = lst->col_four;
@@ -113,7 +113,7 @@ void	ft_add_file(struct l_file *lst, char *name, struct stat *filestat, t_arg *a
 	lst->begin = tmp;
 	lst->dir = NULL;
 	lst->filestat = filestat;
-	if ((lst->col_one = ft_gil(filestat->st_nlink)) > lst->begin->col_one && ((arg->a == 0 && strcmp(lst->name, ".") != 0 && strcmp(lst->name, "..") != 0) || arg->a == 1))
+	if ((lst->col_one = ft_gil(filestat->st_nlink)) > lst->begin->col_one && ((arg->a == 0 && ft_strcmp(lst->name, ".") != 0 && ft_strcmp(lst->name, "..") != 0) || arg->a == 1))
 		lst->begin->col_one = lst->col_one;
 	if ((lst->col_four = ft_gil(filestat->st_size)) > lst->begin->col_four)
 		lst->begin->col_four = lst->col_four;

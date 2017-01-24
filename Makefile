@@ -6,7 +6,7 @@
 #    By: marvin <marvin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/12/08 06:09:56 by gmonein           #+#    #+#              #
-#    Updated: 2017/01/23 19:18:28 by marvin           ###   ########.fr        #
+#    Updated: 2017/01/24 03:26:45 by gmonein          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,6 +32,13 @@ SRC = ./srcs/list_utils.c \
         srcs/lib/ft_strcmp.c \
         srcs/lib/ft_strdup.c \
         srcs/lib/ft_strlen.c \
+        srcs/lib/ft_strnew.c \
+        srcs/lib/ft_strsplit.c \
+        srcs/lib/ft_strsub.c \
+        srcs/lib/ft_bzero.c \
+        srcs/lib/ft_memset.c \
+        srcs/lib/ft_memalloc.c \
+		new_ls.c \
 
 all:
 	gcc $(FLAGS) -I $(HEADER) $(SRC) -o $(NAME)

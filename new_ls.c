@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/16 18:52:51 by gmonein           #+#    #+#             */
-/*   Updated: 2017/01/24 03:18:30 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/24 16:56:19 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ int		ft_ls(char *path, struct l_file *lst, struct l_file *begin, t_arg *sarg)
 
 	if (!(fd = opendir(path)))
 	{
-		write(1, "ls: ", 4);
-		perror(path);
+//		write(1, "ls: ", 4);
+//		perror(path);
 		return (0);
 	}
 	while ((stc = readdir(fd)) != NULL)
@@ -41,8 +41,8 @@ int		ft_ls(char *path, struct l_file *lst, struct l_file *begin, t_arg *sarg)
 			lst = lst->next;
 	}
 	lst = begin;
-	ft_print(lst->begin, sarg);
-	while (lst->next != NULL && sarg->mr == 1)
+	ft_print(lst, sarg);
+	while (lst != NULL && sarg->mr == 1)
 	{
 		if (lst->id == 1)
 			ft_ls(ft_make_path(path, lst->name), lst->dir, lst->dir, sarg);
@@ -50,42 +50,6 @@ int		ft_ls(char *path, struct l_file *lst, struct l_file *begin, t_arg *sarg)
 	}
 	closedir(fd);
 	return (1);
-}
-
-void	ft_print_mr(struct l_file *lst, t_arg *sarg, int repeat)
-{
-	struct l_file	*toread;
-	struct l_file	*tmpt;
-	struct l_file	*tmpl;
-
-	tmpl = lst;
-	toread = ft_init_lst();
-	tmpt = toread;
-	while (lst && lst->next != NULL)
-	{
-		if (sarg->mr == 1 && lst->id == 1 && (sarg->a == 1 || (sarg->a == 0 && lst->name[0] != '.')))
-		{
-			toread->next = ft_init_lst();
-			toread->name = ft_strdup(lst->begin->path);
-			toread = toread->next;
-			toread->dir = lst->dir;
-		}
-		lst = lst->next;
-	}
-	toread = tmpt;
-	if (repeat != 0)
-	{
-		write(1, tmpl->path, ft_strlen(tmpl->path));
-		write(1, ":\n", 2);
-	}
-	(sarg->l == 1 ? print_l(tmpl, sarg->a) : print_nl(tmpl, sarg->a));
-	if (toread->next != NULL)
-		write(1, "\n", 1);
-	while (toread->next != NULL)
-	{
-		toread = toread->next;
-		ft_print_mr(toread->dir, sarg, 1);
-	}
 }
 
 int		main(int ac, char **av)
@@ -100,6 +64,7 @@ int		main(int ac, char **av)
 	repeat = 0;
 	cnt = 0;
 	ft_get_arg(ac, av, &arg);
+	sarg.single_arg = 0;
 	sarg.r = (ft_strchr(arg, 'r') != NULL ? 1 : -1);
 	sarg.a = (ft_strchr(arg, 'a') != NULL ? 1 : 0);
 	sarg.l = (ft_strchr(arg, 'l') != NULL ? 1 : 0);
@@ -118,8 +83,6 @@ int		main(int ac, char **av)
 			if (toread->next != NULL)
 				write(1, "\n", 1);
 		}
-		else
-			repeat = 1;
 	}
 	ft_free_tree(toread);
 	return (0);

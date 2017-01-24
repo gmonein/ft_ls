@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/22 06:28:27 by marvin            #+#    #+#             */
-/*   Updated: 2017/01/22 06:28:27 by marvin           ###   ########.fr       */
+/*   Updated: 2017/01/24 16:20:37 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,17 +46,18 @@ struct l_file		*ft_get_dir(int ac, char **av, t_arg *sarg)
 	i = 1;
 	lst = ft_init_lst();
 	tmp = lst;
-	r = ac - 2;
-	while (av[i] && av[i][0] == '-' && r++)
+	r = ac - 1;
+	while (av[i] && av[i][0] == '-')
 		i++;
-	if (i == ac - 1 || ac == 1)
+	sarg->single_arg = (ac - i > 1 ? 0 : 1);
+	if (ac - i == 0 || ac == 1)
 	{
 		lst->next = ft_init_lst();
 		lst = lst->next;
 		lst->name = ft_strdup(".");
 	}
 	else
-		while ((sarg->r == -1 && av[i]) || (sarg->r == 1 && av[r] && r != i - 1))
+		while ((sarg->r == -1 && av[i]) || (sarg->r == 1 && av[r] && r != i))
 		{
 			lst->next = ft_init_lst();
 			lst = lst->next;

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/22 06:25:16 by marvin            #+#    #+#             */
-/*   Updated: 2017/01/24 02:45:32 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/24 14:47:28 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ struct l_file		*lst_sort_place(struct l_file *lst, char *str, t_arg *sarg, struc
 		lst = lst->next;
 		if (sarg->t != 1 && lst->name != NULL && (ft_strcmp(str, lst->name) * sarg->r) > 0)
 			return (tmp);
-		if (sarg->t == 1 && lst->filestat->st_mtime < filestat->st_mtime)
+		if (sarg->t == 1 && (lst->filestat->st_mtime * sarg->r) > (filestat->st_mtime * sarg->r))
 			return (tmp);
 	}
 	return (tmp->next);

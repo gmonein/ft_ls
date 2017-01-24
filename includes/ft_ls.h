@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/12 11:29:33 by gmonein           #+#    #+#             */
-/*   Updated: 2017/01/24 03:26:38 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/24 15:56:50 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ typedef struct		l_file
 
 typedef struct		s_arg
 {
+	int			single_arg;
 	int			a;
 	int			l;
 	int			r;

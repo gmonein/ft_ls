@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/22 06:25:16 by marvin            #+#    #+#             */
-/*   Updated: 2017/01/24 14:47:28 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/26 22:00:09 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ struct l_file		*ft_init_lst(void)
 	lst->filestat = NULL;
 	lst->len_name = 1;
 	lst->id = 0;
+	lst->isp = 0;
+	lst->hide = 0;
 	lst->col_one = 0;
 	lst->col_four = 1;
 	lst->total = 0;
@@ -84,6 +86,8 @@ void	ft_add_dir(struct l_file *lst, char *name, struct stat *filestat, t_arg *ar
 	lst->name = ft_strdup(name);
 	lst->begin = tmp;
 	lst->filestat = filestat;
+	lst->hide = (name[0] == '.' ? 1 : 0);
+	lst->dir->hide = ((name[0] == '.' || lst->begin->hide == 1) ? 1 : 0);
 	if ((lst->col_one = ft_gil(filestat->st_nlink)) > lst->begin->col_one && ((arg->a == 0 && ft_strcmp(lst->name, ".") != 0 && ft_strcmp(lst->name, "..") != 0) || arg->a == 1))
 		lst->begin->col_one = lst->col_one;
 	if ((lst->col_four = ft_gil(filestat->st_size)) > lst->begin->col_four)
@@ -113,6 +117,7 @@ void	ft_add_file(struct l_file *lst, char *name, struct stat *filestat, t_arg *a
 	lst->begin = tmp;
 	lst->dir = NULL;
 	lst->filestat = filestat;
+	lst->hide = (name[0] == '.' ? 1 : 0);
 	if ((lst->col_one = ft_gil(filestat->st_nlink)) > lst->begin->col_one && ((arg->a == 0 && ft_strcmp(lst->name, ".") != 0 && ft_strcmp(lst->name, "..") != 0) || arg->a == 1))
 		lst->begin->col_one = lst->col_one;
 	if ((lst->col_four = ft_gil(filestat->st_size)) > lst->begin->col_four)

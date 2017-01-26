@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/12 11:29:33 by gmonein           #+#    #+#             */
-/*   Updated: 2017/01/24 15:56:50 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/26 21:59:21 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,15 @@
 # include <pwd.h>
 # include <grp.h>
 # include <time.h>
+# include <sys/ioctl.h>
+# include <unistd.h>
 
 typedef struct		l_file
 {
 	char			*name;
 	char			*path;
+	int				hide;
+	int				isp;
 	int				id;
 	int				total;
 	int				col_one;

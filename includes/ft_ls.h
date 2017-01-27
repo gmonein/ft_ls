@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/12 11:29:33 by gmonein           #+#    #+#             */
-/*   Updated: 2017/01/26 21:59:21 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/27 05:37:05 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,17 @@ typedef struct		l_file
 	int				col_one;
 	int				col_four;
 	int				len_name;
+	int				elem;
 	struct stat		*filestat;
 	struct l_file	*dir;
 	struct l_file	*next;
 	struct l_file	*begin;
+	struct l_file	*buf;
 }					t_file;
 
 typedef struct		s_arg
 {
+	int			f_total;
 	int			single_arg;
 	int			a;
 	int			l;
@@ -57,6 +60,8 @@ typedef struct		s_arg
 	int			t;
 }					t_arg;
 
+
+void				ft_dupe_lst(t_file *src, t_file *lst);
 void				*ft_memset(void *b, int c, size_t len);
 void				ft_bzero(void *s, size_t n);
 void				*ft_memalloc(size_t size);
@@ -80,7 +85,7 @@ int					ft_gil(int n);
 void				ft_free_tree(struct l_file *lst);
 void      			ft_print(struct l_file *lst, t_arg *srag);
 void				print_nl(struct l_file *lst, int a);
-void				print_l(struct l_file *lst, int a);
+void				print_l(struct l_file *lst, int a, int f_total);
 void				print_right(struct stat *filestat);
 void				print_time(char *str);
 int					ft_get_arg(int ac, char **av, char **arg);

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/22 06:25:16 by marvin            #+#    #+#             */
-/*   Updated: 2017/01/26 22:00:09 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/27 05:48:39 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,26 @@ struct l_file		*lst_sort_place(struct l_file *lst, char *str, t_arg *sarg, struc
 	{
 		tmp = lst;
 		lst = lst->next;
-		if (sarg->t != 1 && lst->name != NULL && (ft_strcmp(str, lst->name) * sarg->r) > 0)
+		if (sarg->t == 0 && lst->name != NULL && (ft_strcmp(str, lst->name) * sarg->r) > -1)
 			return (tmp);
-		if (sarg->t == 1 && (lst->filestat->st_mtime * sarg->r) > (filestat->st_mtime * sarg->r))
+		if (sarg->t == 1 && (lst->filestat == NULL || ((lst->filestat->st_mtime * sarg->r) > (filestat->st_mtime * sarg->r))))
 			return (tmp);
 	}
 	return (tmp->next);
+}
+
+void		ft_dupe_lst(t_file *src, t_file *lst)
+{
+	lst->name = src->name;
+	lst->dir = src->dir;
+	lst->filestat = src->filestat;
+	lst->len_name = src->len_name;
+	lst->id = src->id;
+	lst->isp = src->isp;
+	lst->hide = src->hide;
+	lst->col_one = src->col_one;
+	lst->col_four = src->col_four;;
+	lst->total = src->total;
 }
 
 struct l_file		*ft_init_lst(void)
@@ -48,6 +62,7 @@ struct l_file		*ft_init_lst(void)
 	lst->begin = lst;
 	return (lst);
 }
+
 
 struct l_file		*ft_bet_node(struct l_file *lst)
 {
@@ -72,7 +87,7 @@ void	ft_add_dir(struct l_file *lst, char *name, struct stat *filestat, t_arg *ar
 
 	tmp = lst->begin;
 	if (lst->begin->next != NULL)
-		lst = lst_sort_place(lst->begin, name, arg, filestat);
+		lst = lst_sort_place(lst, name, arg, filestat);
 	if (lst->next == NULL)
 	{
 		lst->next = (struct l_file *)malloc(sizeof(struct l_file));

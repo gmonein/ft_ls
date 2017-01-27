@@ -6,20 +6,25 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/22 06:30:03 by marvin            #+#    #+#             */
-/*   Updated: 2017/01/26 22:53:57 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/27 06:46:08 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-void			print_l(struct l_file *lst, int a)
+void			print_l(struct l_file *lst, int a, int f_total)
 {
-	write(1, "total ", 6);
-	ft_putnbr(lst->begin->total);
-	write(1, "\n", 1);
+	if (f_total != 1)
+	{
+		write(1, "total ", 6);
+		ft_putnbr(lst->begin->total);
+		write(1, "\n", 1);
+	}
 	while (lst->next != NULL)
 	{
-	lst = lst->next;
+		lst = lst->next;
+		if (lst->name == NULL)
+			break;
 		if (a == 1 || (a == 0 && lst->hide == 0))
 		{
 			print_right(lst->filestat);
@@ -144,10 +149,20 @@ void			print_nl(struct l_file *lst, int a)
 	write(1, "\n", 1);
 }
 
-void        ft_print(struct l_file *lst, t_arg *sarg)
+void       ft_print(struct l_file *lst, t_arg *sarg)
 {
 	static int		first_line;
+	t_file			*tmp;
 
+	tmp = lst;
+	if (lst->name == NULL && lst->next != NULL)
+		lst = lst->next;
+	while (lst->name == NULL && lst->next != NULL)
+	{
+		lst = lst->next;
+		tmp = tmp->next;
+	}
+	lst = tmp;
 	if (sarg->a == 1 || (sarg->a == 0 && lst->begin->hide == 0))
 	{
 		if (sarg->single_arg != 1 || sarg->mr == 1)
@@ -162,7 +177,7 @@ void        ft_print(struct l_file *lst, t_arg *sarg)
 			}
 		}
 		if (sarg->l == 1)
-		    print_l(lst, sarg->a);
+		    print_l(lst, sarg->a, sarg->f_total);
 		if (sarg->l != 1)
 			print_nl_b(lst, sarg->a);
 	}

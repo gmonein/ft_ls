@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/22 06:30:03 by marvin            #+#    #+#             */
-/*   Updated: 2017/01/28 00:31:29 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/28 00:38:21 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,9 +97,9 @@ void			print_nl_b(t_file *lst, int a)
 				tab[y][x + i] = lst->name[i];
 				i++;
 			}
-			if (y < (line - 1))
+			if (lst->name && y < (line - 1))
 				y++;
-			else
+			else if (lst->name)
 			{
 				y = 0;
 				x += lst->begin->len_name + 1;

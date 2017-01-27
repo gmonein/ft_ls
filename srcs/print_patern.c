@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/22 06:30:03 by marvin            #+#    #+#             */
-/*   Updated: 2017/01/27 06:46:08 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/28 00:31:29 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void			print_nl_b(t_file *lst, int a)
 		if (lst->hide == 0 || a == 1)
 		{
 			i = 0;
-			while (lst->name[i])
+			while (lst->name && lst->name[i])
 			{
 				tab[y][x + i] = lst->name[i];
 				i++;
@@ -151,7 +151,7 @@ void			print_nl(struct l_file *lst, int a)
 
 void       ft_print(struct l_file *lst, t_arg *sarg)
 {
-	static int		first_line;
+	static int		first_line = 0;
 	t_file			*tmp;
 
 	tmp = lst;
@@ -167,11 +167,12 @@ void       ft_print(struct l_file *lst, t_arg *sarg)
 	{
 		if (sarg->single_arg != 1 || sarg->mr == 1)
 		{
-			if (first_line != 1)
-				first_line = 1;
+			if (first_line != 2)
+				first_line++;
 			else
-			{
 				write(1, "\n", 1);
+			if (lst->begin->p_path == 1)
+			{
 				write(1, lst->begin->path, ft_strlen(lst->begin->path));
 				write(1, ":\n", 2);
 			}
@@ -180,5 +181,7 @@ void       ft_print(struct l_file *lst, t_arg *sarg)
 		    print_l(lst, sarg->a, sarg->f_total);
 		if (sarg->l != 1)
 			print_nl_b(lst, sarg->a);
+		if (lst->begin->p_path == 0)
+			write(1, "\n", 1);
 	}
 }

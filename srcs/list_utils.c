@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/22 06:25:16 by marvin            #+#    #+#             */
-/*   Updated: 2017/01/27 05:48:39 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/28 00:30:02 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ struct l_file		*ft_init_lst(void)
 	lst->col_one = 0;
 	lst->col_four = 1;
 	lst->total = 0;
+	lst->p_path = 1;
 	lst->begin = lst;
 	return (lst);
 }

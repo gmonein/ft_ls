@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/16 18:52:51 by gmonein           #+#    #+#             */
-/*   Updated: 2017/01/27 06:47:18 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/28 00:29:31 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,12 @@ int		ft_first_ls(t_file *av, struct l_file *file, struct l_file *dir, t_arg *sar
 			ft_add_dir(dir->begin, av->name, filestat, sarg);
 		av = av->next;
 	}
+	filestat = (struct stat *)malloc(sizeof(struct stat));
+	stat(av->name, filestat);
+	if (!S_ISDIR(filestat->st_mode))
+		ft_add_file(file->begin->next, av->name, filestat, sarg);
+	else
+		ft_add_dir(dir->begin, av->name, filestat, sarg);
 	return (1);
 }
 
@@ -94,9 +100,17 @@ int		main(int ac, char **av)
 	sarg.t = (ft_strchr(arg, 't') != NULL ? 1 : 0);
 	lst = ft_init_lst();
 	toread = ft_get_dir(ac, av, &sarg);
+/*	printf("single_arg = %d\n", sarg.single_arg);
+	while (toread->next != NULL)
+	{
+		printf("tr = %s\n", toread->name);
+		toread = toread->next;
+	}
+	printf("tr = %s\n", toread->name);
+*/	toread = toread->begin;
 	tr_file = ft_init_lst();
 	tr_dir = ft_init_lst();
-	if (toread->next->next != NULL)
+	if ((toread->next != NULL && toread->next->next != NULL) || toread->begin->elem > 0)
 	{
 		tr_file->next = ft_init_lst();
 		tr_file->next->begin = tr_file;
@@ -105,6 +119,7 @@ int		main(int ac, char **av)
 		ft_first_ls(toread->next, tr_file, tr_dir, &sarg);
 		sarg.f_total = 1;
 		tr_file = tr_file->begin;
+		tr_file->p_path = 0;
 		tr_dir = tr_dir->begin;
 /*		while (tr_file->next != NULL)
 		{
@@ -131,8 +146,8 @@ int		main(int ac, char **av)
 		{
 			ft_free_tree(lst->begin);
 			lst = ft_init_lst();
-			if (tr_dir->next != NULL && tr_dir->next->name != NULL)
-				write(1, "\n", 1);
+//			if (tr_dir->next != NULL && tr_dir->next->name != NULL)
+//				write(1, "\n", 1);
 		}
 	}
 	ft_free_tree(toread);

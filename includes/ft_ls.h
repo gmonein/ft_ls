@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/12 11:29:33 by gmonein           #+#    #+#             */
-/*   Updated: 2017/01/27 05:37:05 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/28 00:26:18 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef struct		l_file
 	int				col_four;
 	int				len_name;
 	int				elem;
+	int				p_path;;
 	struct stat		*filestat;
 	struct l_file	*dir;
 	struct l_file	*next;

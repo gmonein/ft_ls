@@ -15,6 +15,7 @@
 
 # define VALID_ARG	"lRart"
 # define ILL_OPT	"ls: illegal option -- "
+# define INF_SPACE	"                                                         "
 
 # include <stdlib.h>
 # include <fcntl.h>
@@ -89,8 +90,8 @@ void				ft_free_tree(struct l_file *lst);
 void      			ft_print(struct l_file *lst, t_arg *srag);
 void				print_nl(struct l_file *lst, int a);
 void				print_l(struct l_file *lst, int a, int f_total);
-void				print_right(struct stat *filestat);
-void				print_time(char *str);
+void				print_right(t_file  *lst, t_arg *sarg);
+void				print_time(t_file *lst, t_arg *sarg);
 int					ft_get_arg(int ac, char **av, char **arg);
 struct l_file		*ft_get_dir(int ac, char **av, t_arg *sarg);
 

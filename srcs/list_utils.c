@@ -86,13 +86,13 @@ struct l_file		*ft_bet_node(struct l_file *lst)
 	return (lst);
 }
 
-void	ft_add_dir(t_file *lst, char *name, struct stat *filestat, t_arg *arg)
+void	ft_add_dir(t_file *lst, char *name, struct stat *filestat, t_arg *sarg)
 {
 	struct l_file	*tmp;
 
 	tmp = lst->begin;
 	if (lst->begin->next != NULL)
-		lst = lst_sort_place(lst, name, arg, filestat);
+		lst = lst_sort_place(lst, name, sarg, filestat);
 	if (lst->next == NULL)
 	{
 		lst->next = (struct l_file *)malloc(sizeof(struct l_file));
@@ -108,24 +108,26 @@ void	ft_add_dir(t_file *lst, char *name, struct stat *filestat, t_arg *arg)
 	lst->filestat = filestat;
 	lst->hide = (name[0] == '.' ? 1 : 0);
 	lst->dir->hide = ((name[0] == '.' || lst->begin->hide == 1) ? 1 : 0);
-	if ((lst->col_one = ft_gil(filestat->st_nlink)) > lst->begin->col_one
-	&& ((arg->a == 0 && ft_strcmp(lst->name, ".") != 0
-	&& ft_strcmp(lst->name, "..") != 0) || arg->a == 1))
+	if (sarg->a == 1 || lst->hide == 0)
+		lst->col_one = ft_gil(filestat->st_nlink);
+	if (sarg->a == 1 || lst->hide == 0)
+		lst->col_four = ft_gil(filestat->st_size);
+	if (lst->col_one > lst->begin->col_one)
 		lst->begin->col_one = lst->col_one;
-	if ((lst->col_four = ft_gil(filestat->st_size)) > lst->begin->col_four)
+	if (lst->col_four > lst->begin->col_four)
 		lst->begin->col_four = lst->col_four;
 	if ((lst->len_name = ft_strlen(lst->name)) > lst->begin->len_name)
 		lst->begin->len_name = lst->len_name;
 	lst->begin->total += lst->filestat->st_blocks;
 }
 
-void	ft_add_file(t_file *lst, char *name, struct stat *filestat, t_arg *arg)
+void	ft_add_file(t_file *lst, char *name, struct stat *filestat, t_arg *sarg)
 {
 	struct l_file	*tmp;
 
 	tmp = lst->begin;
 	if (lst->begin->next != NULL)
-		lst = lst_sort_place(lst->begin, name, arg, filestat);
+		lst = lst_sort_place(lst->begin, name, sarg, filestat);
 	if (lst->next == NULL)
 	{
 		lst->next = (struct l_file *)malloc(sizeof(struct l_file));
@@ -140,11 +142,13 @@ void	ft_add_file(t_file *lst, char *name, struct stat *filestat, t_arg *arg)
 	lst->dir = NULL;
 	lst->filestat = filestat;
 	lst->hide = (name[0] == '.' ? 1 : 0);
-	if ((lst->col_one = ft_gil(filestat->st_nlink)) > lst->begin->col_one
-	&& ((arg->a == 0 && ft_strcmp(lst->name, ".") != 0
-	&& ft_strcmp(lst->name, "..") != 0) || arg->a == 1))
+	if (sarg->a == 1 || lst->hide == 0)
+		lst->col_one = ft_gil(filestat->st_nlink);
+	if (sarg->a == 1 || lst->hide == 0)
+		lst->col_four = ft_gil(filestat->st_size);
+	if (lst->col_one > lst->begin->col_one)
 		lst->begin->col_one = lst->col_one;
-	if ((lst->col_four = ft_gil(filestat->st_size)) > lst->begin->col_four)
+	if (lst->col_four > lst->begin->col_four)
 		lst->begin->col_four = lst->col_four;
 	if ((lst->len_name = ft_strlen(lst->name)) > lst->begin->len_name)
 		lst->begin->len_name = lst->len_name;

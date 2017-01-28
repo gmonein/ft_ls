@@ -30,7 +30,6 @@ void			print_l(struct l_file *lst, int a, int f_total)
 			break;
 		if (a == 1 || (a == 0 && lst->hide == 0))
 		{
-			print_right(lst->filestat);
 			write(1, "                  ", lst->begin->col_one - lst->col_one);
 			ft_putnbr(lst->filestat->st_nlink);
 			write(1, " ", 1);
@@ -42,7 +41,7 @@ void			print_l(struct l_file *lst, int a, int f_total)
 			write(1, "                  ", tmp);
 			ft_putnbr(lst->filestat->st_size);
 			write(1, "  ", 1);
-			print_time(ctime(&lst->filestat->st_mtime));
+		//	print_time(ctime(&lst->filestat->st_mtime));
 			write(1, "  ", 1);
 			write(1, lst->name, ft_strlen(lst->name));
 			write(1, "\n", 1);
@@ -50,6 +49,103 @@ void			print_l(struct l_file *lst, int a, int f_total)
 	}
 }
 
+void			ft_print_total(t_file *lst, t_arg *sarg)
+{
+	if (lst->begin != NULL && sarg->f_total != 1)
+	{
+		write(1, "total ", 6);
+		ft_putnbr(lst->begin->total);
+		write(1, "\n", 1);
+	}
+}
+
+void			ft_putmultistr(char *a, char *b, char *c, char *d)
+{
+	if (a != NULL)
+		write (1, a, ft_strlen(a));
+	if (b != NULL)
+		write (1, b, ft_strlen(b));
+	if (c != NULL)
+		write (1, c, ft_strlen(c));
+	if (d != NULL)
+		write (1, d, ft_strlen(d));
+}
+
+void			print_link(t_file *lst, t_arg *sarg)
+{
+	int		i;
+
+	i = lst->begin->col_one - lst->col_one;
+	if (sarg->a == 1 || lst->hide == 0)
+	{
+		printf("-- %d ", i);
+		write(1, "  ", 2);
+		write(1, "                                                       ", i);
+		ft_putnbr(lst->filestat->st_nlink);
+	}
+}
+
+void			print_pw(t_file *lst, t_arg *sarg)
+{
+	int		len;
+
+	if (sarg->a == 1 || lst->hide == 0)
+	{
+		len = ft_strlen(getpwuid(lst->filestat->st_uid)->pw_name);
+		write(1, " ", 1);
+		write(1, getpwuid(lst->filestat->st_uid)->pw_name, len);
+	}
+}
+
+void			print_gr(t_file *lst, t_arg *sarg)
+{
+	int		len;
+
+	if (sarg->a == 1 || lst->hide == 0)
+	{
+		len = ft_strlen(getgrgid(lst->filestat->st_gid)->gr_name);
+		write(1, "  ", 2);
+		write(1, getgrgid(lst->filestat->st_gid)->gr_name, len);
+	}
+}
+
+void			print_size(t_file *lst, t_arg *sarg)
+{
+	int		i;
+
+	i = lst->begin->col_four - lst->col_four;
+	if (sarg->a == 1 || lst->hide == 0)
+	{
+		write(1, INF_SPACE, i + 2);
+		ft_putnbr(lst->filestat->st_size);
+		write(1, " ", 1);
+	}
+}
+
+void			print_name(t_file *lst, t_arg *sarg)
+{
+	if (sarg->a == 1 || lst->hide == 0)
+	{
+		write(1, lst->name, ft_strlen(lst->name));
+	}
+}
+
+void			new_l(t_file *lst, t_arg *sarg)
+{
+	ft_print_total(lst, sarg);
+	while (lst->next != NULL && lst->next->name != NULL)
+	{
+		lst = lst->next;
+		print_right(lst, sarg);
+		print_link(lst, sarg);
+		print_pw(lst, sarg);
+		print_gr(lst, sarg);
+		print_size(lst, sarg);
+		print_time(lst, sarg);
+		print_name(lst, sarg);
+		write(1, "\n", (lst->hide == 0 || sarg->a == 1 ? 1 : 0));
+	}
+}
 
 void			print_nl_b(t_file *lst, int a)
 {
@@ -186,7 +282,7 @@ void       ft_print(struct l_file *lst, t_arg *sarg)
 				does_file = 1;
 		}
 		if (sarg->l == 1)
-		    print_l(lst, sarg->a, sarg->f_total);
+		    new_l(lst, sarg);
 		if (sarg->l != 1)
 			print_nl_b(lst, sarg->a);
 		if (lst->begin->p_path == 0)

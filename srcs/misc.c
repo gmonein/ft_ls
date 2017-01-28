@@ -40,9 +40,14 @@ int					ft_gil(int n)
 {
 	int		i;
 
-	i = 1;
-	while ((n /= 10) != 0)
+	i = 0;
+	if (n == 0)
+		return (1);
+	while (n != 0)
+	{
+		n /= 10;
 		i++;
+	}
 	return (i);
 }
 

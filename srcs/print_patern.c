@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/22 06:30:03 by marvin            #+#    #+#             */
-/*   Updated: 2017/01/28 01:16:03 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/28 08:54:02 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 
 void			print_l(struct l_file *lst, int a, int f_total)
 {
+	int		tmp;
+
+	tmp = 0;
 	if (f_total != 1)
 	{
 		write(1, "total ", 6);
@@ -34,7 +37,9 @@ void			print_l(struct l_file *lst, int a, int f_total)
 			write(1, getpwuid(lst->filestat->st_uid)->pw_name, ft_strlen(getpwuid(lst->filestat->st_uid)->pw_name));
 			write(1, "  ", 2);
 			write(1, getgrgid(lst->filestat->st_gid)->gr_name, ft_strlen(getgrgid(lst->filestat->st_gid)->gr_name));
-			write(1, "                  ", lst->begin->col_four - lst->col_four + 2);
+			if (((tmp = (lst->begin->col_four - lst->col_four)) != -42) && (lst->begin->col_four == 1))
+				tmp++;
+			write(1, "                  ", tmp);
 			ft_putnbr(lst->filestat->st_size);
 			write(1, "  ", 1);
 			print_time(ctime(&lst->filestat->st_mtime));

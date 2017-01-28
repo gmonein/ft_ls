@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/16 18:52:51 by gmonein           #+#    #+#             */
-/*   Updated: 2017/01/28 00:29:31 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/28 01:11:28 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,29 @@ int		ft_first_ls(t_file *av, struct l_file *file, struct l_file *dir, t_arg *sar
 		filestat = (struct stat *)malloc(sizeof(struct stat));
 		stat(av->name, filestat);
 		if (!S_ISDIR(filestat->st_mode))
+		{
 			ft_add_file(file->begin->next, av->name, filestat, sarg);
+			file->begin->f_cnt++;
+		}
 		else
+		{
 			ft_add_dir(dir->begin, av->name, filestat, sarg);
+			dir->begin->d_cnt++;
+		}
 		av = av->next;
 	}
 	filestat = (struct stat *)malloc(sizeof(struct stat));
 	stat(av->name, filestat);
 	if (!S_ISDIR(filestat->st_mode))
+	{
 		ft_add_file(file->begin->next, av->name, filestat, sarg);
+		file->begin->f_cnt++;
+	}
 	else
+	{
 		ft_add_dir(dir->begin, av->name, filestat, sarg);
+		dir->begin->d_cnt++;
+	}
 	return (1);
 }
 
@@ -134,7 +146,8 @@ int		main(int ac, char **av)
 		}
 		printf("dir = %s\n", tr_dir->name);
 */		tr_file = tr_file->begin;
-		ft_print(tr_file, &sarg);
+		if (tr_file->begin->f_cnt != 0)
+			ft_print(tr_file, &sarg);
 		ft_free_tree(tr_file);
 	}
 	sarg.f_total = 0;

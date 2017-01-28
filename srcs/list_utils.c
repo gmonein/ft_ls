@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   list_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: gmonein <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/01/22 06:25:16 by marvin            #+#    #+#             */
-/*   Updated: 2017/01/28 00:30:02 by gmonein          ###   ########.fr       */
+/*   Created: 2017/01/28 00:54:10 by gmonein           #+#    #+#             */
+/*   Updated: 2017/01/28 01:09:21 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-struct l_file		*lst_sort_place(struct l_file *lst, char *str, t_arg *sarg, struct stat *filestat)
+t_file	*lst_sort_place(t_file *lst, char *str, t_arg *sarg, struct stat *stat)
 {
 	struct l_file	*tmp;
 
@@ -21,9 +21,11 @@ struct l_file		*lst_sort_place(struct l_file *lst, char *str, t_arg *sarg, struc
 	{
 		tmp = lst;
 		lst = lst->next;
-		if (sarg->t == 0 && lst->name != NULL && (ft_strcmp(str, lst->name) * sarg->r) > -1)
+		if (sarg->t == 0 && lst->name != NULL
+		&& (ft_strcmp(str, lst->name) * sarg->r) > -1)
 			return (tmp);
-		if (sarg->t == 1 && (lst->filestat == NULL || ((lst->filestat->st_mtime * sarg->r) > (filestat->st_mtime * sarg->r))))
+		if (sarg->t == 1 && (lst->filestat == NULL|| ((
+		lst->filestat->st_mtime * sarg->r) > (stat->st_mtime * sarg->r))))
 			return (tmp);
 	}
 	return (tmp->next);
@@ -60,6 +62,8 @@ struct l_file		*ft_init_lst(void)
 	lst->col_four = 1;
 	lst->total = 0;
 	lst->p_path = 1;
+	lst->f_cnt = 0;
+	lst->d_cnt = 0;
 	lst->begin = lst;
 	return (lst);
 }
@@ -82,7 +86,7 @@ struct l_file		*ft_bet_node(struct l_file *lst)
 	return (lst);
 }
 
-void	ft_add_dir(struct l_file *lst, char *name, struct stat *filestat, t_arg *arg)
+void	ft_add_dir(t_file *lst, char *name, struct stat *filestat, t_arg *arg)
 {
 	struct l_file	*tmp;
 
@@ -104,7 +108,9 @@ void	ft_add_dir(struct l_file *lst, char *name, struct stat *filestat, t_arg *ar
 	lst->filestat = filestat;
 	lst->hide = (name[0] == '.' ? 1 : 0);
 	lst->dir->hide = ((name[0] == '.' || lst->begin->hide == 1) ? 1 : 0);
-	if ((lst->col_one = ft_gil(filestat->st_nlink)) > lst->begin->col_one && ((arg->a == 0 && ft_strcmp(lst->name, ".") != 0 && ft_strcmp(lst->name, "..") != 0) || arg->a == 1))
+	if ((lst->col_one = ft_gil(filestat->st_nlink)) > lst->begin->col_one
+	&& ((arg->a == 0 && ft_strcmp(lst->name, ".") != 0
+	&& ft_strcmp(lst->name, "..") != 0) || arg->a == 1))
 		lst->begin->col_one = lst->col_one;
 	if ((lst->col_four = ft_gil(filestat->st_size)) > lst->begin->col_four)
 		lst->begin->col_four = lst->col_four;
@@ -113,7 +119,7 @@ void	ft_add_dir(struct l_file *lst, char *name, struct stat *filestat, t_arg *ar
 	lst->begin->total += lst->filestat->st_blocks;
 }
 
-void	ft_add_file(struct l_file *lst, char *name, struct stat *filestat, t_arg *arg)
+void	ft_add_file(t_file *lst, char *name, struct stat *filestat, t_arg *arg)
 {
 	struct l_file	*tmp;
 
@@ -134,7 +140,9 @@ void	ft_add_file(struct l_file *lst, char *name, struct stat *filestat, t_arg *a
 	lst->dir = NULL;
 	lst->filestat = filestat;
 	lst->hide = (name[0] == '.' ? 1 : 0);
-	if ((lst->col_one = ft_gil(filestat->st_nlink)) > lst->begin->col_one && ((arg->a == 0 && ft_strcmp(lst->name, ".") != 0 && ft_strcmp(lst->name, "..") != 0) || arg->a == 1))
+	if ((lst->col_one = ft_gil(filestat->st_nlink)) > lst->begin->col_one
+	&& ((arg->a == 0 && ft_strcmp(lst->name, ".") != 0
+	&& ft_strcmp(lst->name, "..") != 0) || arg->a == 1))
 		lst->begin->col_one = lst->col_one;
 	if ((lst->col_four = ft_gil(filestat->st_size)) > lst->begin->col_four)
 		lst->begin->col_four = lst->col_four;

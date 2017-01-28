@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/22 06:30:03 by marvin            #+#    #+#             */
-/*   Updated: 2017/01/28 00:38:21 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/28 01:16:03 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,7 @@ void			print_nl(struct l_file *lst, int a)
 void       ft_print(struct l_file *lst, t_arg *sarg)
 {
 	static int		first_line = 0;
+	static int		does_file = 0;
 	t_file			*tmp;
 
 	tmp = lst;
@@ -167,7 +168,7 @@ void       ft_print(struct l_file *lst, t_arg *sarg)
 	{
 		if (sarg->single_arg != 1 || sarg->mr == 1)
 		{
-			if (first_line != 2)
+			if (first_line != does_file + 1)
 				first_line++;
 			else
 				write(1, "\n", 1);
@@ -176,6 +177,8 @@ void       ft_print(struct l_file *lst, t_arg *sarg)
 				write(1, lst->begin->path, ft_strlen(lst->begin->path));
 				write(1, ":\n", 2);
 			}
+			else
+				does_file = 1;
 		}
 		if (sarg->l == 1)
 		    print_l(lst, sarg->a, sarg->f_total);

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/16 18:52:51 by gmonein           #+#    #+#             */
-/*   Updated: 2017/01/29 13:27:46 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/29 15:20:37 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,6 @@ int		ft_ls(char *path, struct l_file *lst, struct l_file *begin, t_arg *sarg)
 		if (lst->next)
 			lst = lst->next;
 	}
-	printf("5\n");
 	lst = begin;
 	ft_print(lst, sarg);
 	while (lst != NULL && sarg->mr == 1)
@@ -110,6 +109,7 @@ int		main(int ac, char **av)
 	long long		cnt;
 	char			*arg;
 	int				repeat;
+	struct winsize	size;
 	t_file			*tr_file;
 	t_file			*tr_dir;
 	t_arg			sarg;
@@ -118,11 +118,12 @@ int		main(int ac, char **av)
 	cnt = 0;
 	ft_get_arg(ac, av, &arg);
 	sarg.single_arg = 0;
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
 	sarg.r = (ft_strchr(arg, 'r') != NULL ? 1 : -1);
 	sarg.a = (ft_strchr(arg, 'a') != NULL ? 1 : 0);
 	sarg.l = (ft_strchr(arg, 'l') != NULL ? 1 : 0);
 	sarg.t = (ft_strchr(arg, 't') != NULL ? 1 : 0);
-	sarg.mc = (ft_strchr(arg, 'C') != NULL ? 1 : 0);
+	sarg.mc = (ft_strchr(arg, 'C') != NULL && size.ws_col != 0 ? 1 : 0);
 	sarg.ml = (ft_strchr(arg, 'L') != NULL ? 1 : 0);
 	sarg.mr = (ft_strchr(arg, 'R') != NULL ? 1 : 0);
 	sarg.single_folder = 1;
@@ -179,9 +180,7 @@ int		main(int ac, char **av)
 //			if (tr_dir->next != NULL && tr_dir->next->name != NULL)
 //				write(1, "\n", 1);
 		}
-	printf("1\n");
 	}
 	ft_free_tree(toread);
-	write(1, "\n", 1);
 	return (0);
 }

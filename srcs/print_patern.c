@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/22 06:30:03 by marvin            #+#    #+#             */
-/*   Updated: 2017/01/29 13:23:27 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/29 15:40:11 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,12 +124,13 @@ void			print_nl_b(t_file *lst, t_arg *sarg)
 	int					i;
 	int					x;
 	int					y;
+	t_file				*begin;
 
+	begin = lst;
 	elem = 0;
+	size.ws_col = 0;
 	if (sarg->mc == 1)
 		ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
-	else
-		size.ws_col = 0;
 	while (lst->next != NULL)
 	{
 		if ((lst->hide == 0 || sarg->a == 1) && lst->name != NULL)
@@ -145,16 +146,17 @@ void			print_nl_b(t_file *lst, t_arg *sarg)
 	(elem % (col == 0 ? 1 : col) > 0 ? line++ : 1);
 	tab = (char **)malloc(sizeof(char *) * (line + 1));
 	tab[line] = NULL;
+	line = (line == 0 ? 1 : line);
 	while (--line != -1)
 	{
 		tab[line] = (char *)malloc(sizeof(char) * (size.ws_col + 1));
-		tab[line][size.ws_col] = '\0';
 		i = 0;
 		while (i < size.ws_col)
 		{
 			tab[line][i] = ' ';
 			i++;
 		}
+		tab[line][size.ws_col] = '\0';
 	}
 	lst = lst->begin->next;
 	x = 0;
@@ -172,8 +174,6 @@ void			print_nl_b(t_file *lst, t_arg *sarg)
 				tab[y][x + i] = lst->name[i];
 				i++;
 			}
-			if (size.ws_col == lst->begin->len_name)
-				tab[y][x + i] = '\0';
 			if (lst->name && y < (line - 1))
 				y++;
 			else if (lst->name)
@@ -185,10 +185,15 @@ void			print_nl_b(t_file *lst, t_arg *sarg)
 		lst = lst->next;
 	}
 	y = 0;
+	int		k;
+
 	while (tab[y])
 	{
-		write(1, tab[y], ft_strlen(tab[y]));
-		if (tab[y + 1] != NULL)
+		k = size.ws_col - 1;
+		while(tab[y][k] == ' ')
+			k--;
+		write(1, tab[y], k + 1);
+		if (tab[y + 1] != NULL && (begin->len_name != size.ws_col || sarg->mc == 0))
 			write(1, "\n", 1);
 		free(tab[y]);
 		y++;
@@ -256,7 +261,7 @@ void       ft_print(struct l_file *lst, t_arg *sarg)
 		    new_l(lst, sarg);
 		else if (sarg->l != 1)
 			print_nl_b(lst, sarg);
-		if (first_line != 1 && sarg->only_file == 0)
+		if (sarg->only_file != 0 && sarg->mc == 1)
 			write(1, "\n", 1);
 	}
 }

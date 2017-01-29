@@ -6,48 +6,11 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/22 06:30:03 by marvin            #+#    #+#             */
-/*   Updated: 2017/01/28 08:54:02 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/29 13:23:27 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
-
-void			print_l(struct l_file *lst, int a, int f_total)
-{
-	int		tmp;
-
-	tmp = 0;
-	if (f_total != 1)
-	{
-		write(1, "total ", 6);
-		ft_putnbr(lst->begin->total);
-		write(1, "\n", 1);
-	}
-	while (lst->next != NULL)
-	{
-		lst = lst->next;
-		if (lst->name == NULL)
-			break;
-		if (a == 1 || (a == 0 && lst->hide == 0))
-		{
-			write(1, "                  ", lst->begin->col_one - lst->col_one);
-			ft_putnbr(lst->filestat->st_nlink);
-			write(1, " ", 1);
-			write(1, getpwuid(lst->filestat->st_uid)->pw_name, ft_strlen(getpwuid(lst->filestat->st_uid)->pw_name));
-			write(1, "  ", 2);
-			write(1, getgrgid(lst->filestat->st_gid)->gr_name, ft_strlen(getgrgid(lst->filestat->st_gid)->gr_name));
-			if (((tmp = (lst->begin->col_four - lst->col_four)) != -42) && (lst->begin->col_four == 1))
-				tmp++;
-			write(1, "                  ", tmp);
-			ft_putnbr(lst->filestat->st_size);
-			write(1, "  ", 1);
-		//	print_time(ctime(&lst->filestat->st_mtime));
-			write(1, "  ", 1);
-			write(1, lst->name, ft_strlen(lst->name));
-			write(1, "\n", 1);
-		}
-	}
-}
 
 void			ft_print_total(t_file *lst, t_arg *sarg)
 {
@@ -79,8 +42,8 @@ void			print_link(t_file *lst, t_arg *sarg)
 	if (sarg->a == 1 || lst->hide == 0)
 	{
 		write(1, "  ", 2);
-		write(1, "                                                       ", i);
-		ft_putnbr(lst->filestat->st_nlink);
+		write(1, "                                         ", (i < 0 ? 0 : i));
+		ft_putnbr(lst->filestat[sarg->ml]->st_nlink);
 	}
 }
 
@@ -90,9 +53,9 @@ void			print_pw(t_file *lst, t_arg *sarg)
 
 	if (sarg->a == 1 || lst->hide == 0)
 	{
-		len = ft_strlen(getpwuid(lst->filestat->st_uid)->pw_name);
+		len = ft_strlen(getpwuid(lst->filestat[sarg->ml]->st_uid)->pw_name);
 		write(1, " ", 1);
-		write(1, getpwuid(lst->filestat->st_uid)->pw_name, len);
+		write(1, getpwuid(lst->filestat[sarg->ml]->st_uid)->pw_name, len);
 	}
 }
 
@@ -102,9 +65,9 @@ void			print_gr(t_file *lst, t_arg *sarg)
 
 	if (sarg->a == 1 || lst->hide == 0)
 	{
-		len = ft_strlen(getgrgid(lst->filestat->st_gid)->gr_name);
+		len = ft_strlen(getgrgid(lst->filestat[sarg->ml]->st_gid)->gr_name);
 		write(1, "  ", 2);
-		write(1, getgrgid(lst->filestat->st_gid)->gr_name, len);
+		write(1, getgrgid(lst->filestat[sarg->ml]->st_gid)->gr_name, len);
 	}
 }
 
@@ -116,7 +79,7 @@ void			print_size(t_file *lst, t_arg *sarg)
 	if (sarg->a == 1 || lst->hide == 0)
 	{
 		write(1, INF_SPACE, i + 2);
-		ft_putnbr(lst->filestat->st_size);
+		ft_putnbr(lst->filestat[sarg->ml]->st_size);
 		write(1, " ", 1);
 	}
 }
@@ -126,6 +89,11 @@ void			print_name(t_file *lst, t_arg *sarg)
 	if (sarg->a == 1 || lst->hide == 0)
 	{
 		write(1, lst->name, ft_strlen(lst->name));
+		if (sarg->ml == 0 && lst->symb == 1)
+		{
+			write(1, " -> ", 4);
+			write(1, lst->sl_name, ft_strlen(lst->sl_name));
+		}
 	}
 }
 
@@ -146,7 +114,7 @@ void			new_l(t_file *lst, t_arg *sarg)
 	}
 }
 
-void			print_nl_b(t_file *lst, int a)
+void			print_nl_b(t_file *lst, t_arg *sarg)
 {
 	int					col;
 	int					line;
@@ -158,38 +126,45 @@ void			print_nl_b(t_file *lst, int a)
 	int					y;
 
 	elem = 0;
-	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
+	if (sarg->mc == 1)
+		ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
+	else
+		size.ws_col = 0;
 	while (lst->next != NULL)
 	{
-		if (lst->hide == 0 || a == 1)
+		if ((lst->hide == 0 || sarg->a == 1) && lst->name != NULL)
 			elem++;
 		lst = lst->next;
 	}
+	if (sarg->r == -1 && elem != 0)
+		elem++;
+	if (size.ws_col == 0)
+		size.ws_col = lst->begin->len_name;
 	col = size.ws_col / lst->begin->len_name;
-	line = elem / col;
-	(elem % col > 0 ? line++ : 1);
+	line = elem / (col == 0 ? 1 : col);
+	(elem % (col == 0 ? 1 : col) > 0 ? line++ : 1);
 	tab = (char **)malloc(sizeof(char *) * (line + 1));
 	tab[line] = NULL;
 	while (--line != -1)
 	{
 		tab[line] = (char *)malloc(sizeof(char) * (size.ws_col + 1));
+		tab[line][size.ws_col] = '\0';
 		i = 0;
-		while (i <= size.ws_col)
+		while (i < size.ws_col)
 		{
 			tab[line][i] = ' ';
 			i++;
 		}
-		tab[line][size.ws_col] = '\0';
 	}
 	lst = lst->begin->next;
 	x = 0;
 	y = 0;
 	col = size.ws_col / lst->begin->len_name;
-	line = elem / col;
-	(elem % col > 0 ? line++ : 1);
+	line = elem / (col == 0 ? 1 : col);
+	(elem % (col == 0 ? 1 : col) > 0 ? line++ : 1);
 	while (lst != NULL)
 	{
-		if (lst->hide == 0 || a == 1)
+		if (lst->hide == 0 || sarg->a == 1)
 		{
 			i = 0;
 			while (lst->name && lst->name[i])
@@ -197,6 +172,8 @@ void			print_nl_b(t_file *lst, int a)
 				tab[y][x + i] = lst->name[i];
 				i++;
 			}
+			if (size.ws_col == lst->begin->len_name)
+				tab[y][x + i] = '\0';
 			if (lst->name && y < (line - 1))
 				y++;
 			else if (lst->name)
@@ -211,7 +188,8 @@ void			print_nl_b(t_file *lst, int a)
 	while (tab[y])
 	{
 		write(1, tab[y], ft_strlen(tab[y]));
-		write(1, "\n", 1);
+		if (tab[y + 1] != NULL)
+			write(1, "\n", 1);
 		free(tab[y]);
 		y++;
 	}
@@ -239,14 +217,8 @@ void			print_nl(struct l_file *lst, int a)
 			while (lst->next != NULL && j--)
 				write(1, " ", 1);
 			i++;
-			if (line_len > size.ws_col)
-			{
-				line_len = lst->begin->len_name;
-				write(1, "\n", 1);
-			}
 		}
 	}
-	write(1, "\n", 1);
 }
 
 void       ft_print(struct l_file *lst, t_arg *sarg)
@@ -268,11 +240,11 @@ void       ft_print(struct l_file *lst, t_arg *sarg)
 	{
 		if (sarg->single_arg != 1 || sarg->mr == 1)
 		{
-			if (first_line != does_file + 1)
+			if (first_line != 1)
 				first_line++;
 			else
 				write(1, "\n", 1);
-			if (lst->begin->p_path == 1)
+			if (lst->begin->p_path == 1 && (sarg->single_arg != 1 || first_line != 1))
 			{
 				write(1, lst->begin->path, ft_strlen(lst->begin->path));
 				write(1, ":\n", 2);
@@ -282,9 +254,9 @@ void       ft_print(struct l_file *lst, t_arg *sarg)
 		}
 		if (sarg->l == 1)
 		    new_l(lst, sarg);
-		if (sarg->l != 1)
-			print_nl_b(lst, sarg->a);
-		if (lst->begin->p_path == 0)
+		else if (sarg->l != 1)
+			print_nl_b(lst, sarg);
+		if (first_line != 1 && sarg->only_file == 0)
 			write(1, "\n", 1);
 	}
 }

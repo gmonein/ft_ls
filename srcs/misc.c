@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/22 06:46:35 by marvin            #+#    #+#             */
-/*   Updated: 2017/01/22 06:46:35 by marvin           ###   ########.fr       */
+/*   Updated: 2017/01/29 08:20:31 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,6 @@ void	ft_free_tree(struct l_file *lst)
 			ft_free_tree(lst->dir);
 		ft_free_tree(lst->next);
 	}
-	if (lst->filestat)
-		free(lst->filestat);
 	if (lst->name)
 		free(lst->name);
 	free(lst);

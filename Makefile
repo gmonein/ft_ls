@@ -6,7 +6,7 @@
 #    By: marvin <marvin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/12/08 06:09:56 by gmonein           #+#    #+#              #
-#    Updated: 2017/01/27 07:01:10 by gmonein          ###   ########.fr        #
+#    Updated: 2017/01/29 09:40:57 by gmonein          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,6 +38,7 @@ SRC = ./srcs/list_utils.c \
         srcs/lib/ft_bzero.c \
         srcs/lib/ft_memset.c \
         srcs/lib/ft_memalloc.c \
+        srcs/lib/ft_strjoin.c \
 		new_ls.c \
 
 all:

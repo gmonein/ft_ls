@@ -6,14 +6,14 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/12 11:29:33 by gmonein           #+#    #+#             */
-/*   Updated: 2017/01/28 01:08:44 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/29 13:02:00 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_LS_H
 # define FT_LS_H
 
-# define VALID_ARG	"lRart"
+# define VALID_ARG	"CLlRart"
 # define ILL_OPT	"ls: illegal option -- "
 # define INF_SPACE	"                                                         "
 
@@ -34,7 +34,9 @@
 typedef struct		l_file
 {
 	char			*name;
+	char			*sl_name;
 	char			*path;
+	char			*tmppath;
 	int				hide;
 	int				isp;
 	int				id;
@@ -46,7 +48,9 @@ typedef struct		l_file
 	int				p_path;
 	int				f_cnt;
 	int				d_cnt;
-	struct stat		*filestat;
+	int				symb;
+	struct dirent	*stc;
+	struct stat		**filestat;
 	struct l_file	*dir;
 	struct l_file	*next;
 	struct l_file	*begin;
@@ -57,14 +61,19 @@ typedef struct		s_arg
 {
 	int			f_total;
 	int			single_arg;
+	int			single_folder;
+	int			only_file;
 	int			a;
 	int			l;
 	int			r;
-	int			mr;
 	int			t;
+	int			ml;
+	int			mr;
+	int			mc;
 }					t_arg;
 
 
+char				*ft_strjoin_free(char *s1, char *s2, int a, int b);
 void				ft_dupe_lst(t_file *src, t_file *lst);
 void				*ft_memset(void *b, int c, size_t len);
 void				ft_bzero(void *s, size_t n);
@@ -82,9 +91,11 @@ void				ft_putnbr(int n);
 struct l_file		*lst_sort_place(t_file *lst, char *str, t_arg *sarg, struct stat *filestat);
 struct l_file		*ft_init_lst(void);
 struct l_file		*ft_bet_node(struct l_file *lst);
-void				ft_add_dir(struct l_file *lst, struct dirent *stc, struct stat *filestat, t_arg *arg);
-void				ft_add_file(struct l_file *lst, struct dirent *stc, struct stat *filestat, t_arg *arg);
 char				*ft_make_path(char *start, char *end);
+void				ft_add_dir(struct l_file *lst, struct dirent *stc, struct stat **filestat, t_arg *arg);
+void				ft_add_file(struct l_file *lst, struct dirent *stc, struct stat **filestat, t_arg *arg);
+void				ft_add_dir_ns(struct l_file *lst, char *name, struct stat **filestat, t_arg *arg);
+void				ft_add_file_ns(struct l_file *lst, char *name, struct stat **filestat, t_arg *arg);
 int					ft_gil(int n);
 void				ft_free_tree(struct l_file *lst);
 void      			ft_print(struct l_file *lst, t_arg *srag);

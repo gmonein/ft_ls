@@ -15,19 +15,21 @@
 int		ft_first_ls(t_file *av, struct l_file *file, struct l_file *dir, t_arg *sarg)
 {
 	struct stat		*filestat;
+	struct dirent	stc;
 
 	while (av->next != NULL)
 	{
+		stc.d_name = ft_strdup(av->name);
 		filestat = (struct stat *)malloc(sizeof(struct stat));
 		stat(av->name, filestat);
 		if (!S_ISDIR(filestat->st_mode))
 		{
-			ft_add_file(file->begin->next, av->name, filestat, sarg);
+			ft_add_file(file->begin->next, &stc, filestat, sarg);
 			file->begin->f_cnt++;
 		}
 		else
 		{
-			ft_add_dir(dir->begin, av->name, filestat, sarg);
+			ft_add_dir(dir->begin, &stc, filestat, sarg);
 			dir->begin->d_cnt++;
 		}
 		av = av->next;
@@ -70,9 +72,9 @@ int		ft_ls(char *path, struct l_file *lst, struct l_file *begin, t_arg *sarg)
 		stat(tmppath, filestat);
 		if (ft_strcmp(".", stc->d_name) != 0
 		&& ft_strcmp("..", stc->d_name) != 0 && S_ISDIR(filestat->st_mode))
-			ft_add_dir(lst->begin, stc->d_name, filestat, sarg);
+			ft_add_dir(lst->begin, stc, filestat, sarg);
 		else
-			ft_add_file(lst->begin, stc->d_name, filestat, sarg);
+			ft_add_file(lst->begin, stc, filestat, sarg);
 		lst->path = tmppath;
 		lst->begin->path = path;
 		if (lst->next)

@@ -78,7 +78,6 @@ void			print_link(t_file *lst, t_arg *sarg)
 	i = lst->begin->col_one - lst->col_one;
 	if (sarg->a == 1 || lst->hide == 0)
 	{
-		printf("-- %d ", i);
 		write(1, "  ", 2);
 		write(1, "                                                       ", i);
 		ft_putnbr(lst->filestat->st_nlink);

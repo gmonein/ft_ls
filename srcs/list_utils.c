@@ -86,13 +86,13 @@ struct l_file		*ft_bet_node(struct l_file *lst)
 	return (lst);
 }
 
-void	ft_add_dir(t_file *lst, char *name, struct stat *filestat, t_arg *sarg)
+void	ft_add_dir(t_file *lst, struct dirent *stc, struct stat *filestat, t_arg *sarg)
 {
 	struct l_file	*tmp;
 
 	tmp = lst->begin;
 	if (lst->begin->next != NULL)
-		lst = lst_sort_place(lst, name, sarg, filestat);
+		lst = lst_sort_place(lst, stc->d_name, sarg, filestat);
 	if (lst->next == NULL)
 	{
 		lst->next = (struct l_file *)malloc(sizeof(struct l_file));
@@ -103,11 +103,11 @@ void	ft_add_dir(t_file *lst, char *name, struct stat *filestat, t_arg *sarg)
 		lst = ft_bet_node(lst);
 	lst->dir = ft_init_lst();
 	lst->id = 1;
-	lst->name = ft_strdup(name);
+	lst->name = ft_strdup(stc->d_name);
 	lst->begin = tmp;
 	lst->filestat = filestat;
-	lst->hide = (name[0] == '.' ? 1 : 0);
-	lst->dir->hide = ((name[0] == '.' || lst->begin->hide == 1) ? 1 : 0);
+	lst->hide = (stc->d_name[0] == '.' ? 1 : 0);
+	lst->dir->hide = ((stc->d_name[0] == '.' || lst->begin->hide == 1) ? 1 : 0);
 	if (sarg->a == 1 || lst->hide == 0)
 		lst->col_one = ft_gil(filestat->st_nlink);
 	if (sarg->a == 1 || lst->hide == 0)
@@ -121,13 +121,13 @@ void	ft_add_dir(t_file *lst, char *name, struct stat *filestat, t_arg *sarg)
 	lst->begin->total += lst->filestat->st_blocks;
 }
 
-void	ft_add_file(t_file *lst, char *name, struct stat *filestat, t_arg *sarg)
+void	ft_add_file(t_file *lst, struct dirent *stc, struct stat *filestat, t_arg *sarg)
 {
 	struct l_file	*tmp;
 
 	tmp = lst->begin;
 	if (lst->begin->next != NULL)
-		lst = lst_sort_place(lst->begin, name, sarg, filestat);
+		lst = lst_sort_place(lst->begin, stc->d_name, sarg, filestat);
 	if (lst->next == NULL)
 	{
 		lst->next = (struct l_file *)malloc(sizeof(struct l_file));
@@ -137,11 +137,11 @@ void	ft_add_file(t_file *lst, char *name, struct stat *filestat, t_arg *sarg)
 	else
 		lst = ft_bet_node(lst);
 	lst->id = 0;
-	lst->name = ft_strdup(name);
+	lst->name = ft_strdup(stc->d_name);
 	lst->begin = tmp;
 	lst->dir = NULL;
 	lst->filestat = filestat;
-	lst->hide = (name[0] == '.' ? 1 : 0);
+	lst->hide = (stc->d_name[0] == '.' ? 1 : 0);
 	if (sarg->a == 1 || lst->hide == 0)
 		lst->col_one = ft_gil(filestat->st_nlink);
 	if (sarg->a == 1 || lst->hide == 0)

@@ -12,11 +12,20 @@
 
 #include "ft_ls.h"
 
+void			print_mode(t_file *lst, t_arg *sarg)
+{
+	if (S_ISDIR(lst->filestat->st_mode))
+		write(1, "d", 1);
+	else if (S_ISLNK(lst->filestat->st_mode))
+		write(1, "d", 1);
+}
+
 void			print_right(t_file *lst, t_arg *sarg)
 {
 	if (sarg->a == 1 || lst->hide == 0)
 	{
-		write(1, (S_ISDIR(lst->filestat->st_mode) ? "d" : "-"), 1);
+		if (ft_strcmp(lst->filestat->st_mode, "DT_DIR"))
+			write(1, "l", 1);
 		write(1, (lst->filestat->st_mode & S_IRUSR ? "r" : "-"), 1);
 		write(1, (lst->filestat->st_mode & S_IWUSR ? "w" : "-"), 1);
 		write(1, (lst->filestat->st_mode & S_IXUSR ? "x" : "-"), 1);
@@ -26,7 +35,6 @@ void			print_right(t_file *lst, t_arg *sarg)
 		write(1, (lst->filestat->st_mode & S_IROTH ? "r" : "-"), 1);
 		write(1, (lst->filestat->st_mode & S_IWOTH ? "w" : "-"), 1);
 		write(1, (lst->filestat->st_mode & S_IXOTH ? "x" : "-"), 1);
-		write(1, "", 1);
 	}
 }
 

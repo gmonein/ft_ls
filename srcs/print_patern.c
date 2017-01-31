@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/22 06:30:03 by marvin            #+#    #+#             */
-/*   Updated: 2017/01/29 15:40:11 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/01/31 09:05:54 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,7 +193,7 @@ void			print_nl_b(t_file *lst, t_arg *sarg)
 		while(tab[y][k] == ' ')
 			k--;
 		write(1, tab[y], k + 1);
-		if (tab[y + 1] != NULL && (begin->len_name != size.ws_col || sarg->mc == 0))
+		if (sarg->mc == 0 || (tab[y + 1] != NULL && tab[y + 2] != NULL))
 			write(1, "\n", 1);
 		free(tab[y]);
 		y++;

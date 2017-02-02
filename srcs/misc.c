@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/22 06:46:35 by marvin            #+#    #+#             */
-/*   Updated: 2017/01/29 08:20:31 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/02/02 19:25:14 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,19 +58,35 @@ int					ft_error(int e, char s)
 		write(1, ILL_OPT, ft_strlen(ILL_OPT));
 		write(1, &s, 1);
 		write(1, "\n", 1);
+		write(1, USAGE, ft_strlen(USAGE));
+		write(1, "\n", 1);
 	}
 	return (-1);
 }
 
+void	ft_free(void *f)
+{
+	if (f)
+		free(f);
+}
+
 void	ft_free_tree(struct l_file *lst)
 {
-	if (lst->next)
+	if (lst)
 	{
-		if (lst->dir != NULL)
-			ft_free_tree(lst->dir);
-		ft_free_tree(lst->next);
+		if (lst->next)
+		{
+			if (lst->dir != NULL)
+				ft_free_tree(lst->dir);
+			ft_free_tree(lst->next);
+		}
+		if (lst->filestat)
+		{
+			ft_free(lst->filestat[0]);
+			ft_free(lst->filestat[1]);
+		}
+		ft_free(lst->name);
+		ft_free(lst->path);
+		free(lst);
 	}
-	if (lst->name)
-		free(lst->name);
-	free(lst);
 }

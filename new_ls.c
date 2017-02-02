@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/16 18:52:51 by gmonein           #+#    #+#             */
-/*   Updated: 2017/01/29 15:20:37 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/02/02 19:21:43 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,18 @@ int		ft_first_ls(t_file *av, struct l_file *file, struct l_file *dir, t_arg *sar
 	{
 		filestat[0] = (struct stat *)malloc(sizeof(struct stat));
 		filestat[1] = (struct stat *)malloc(sizeof(struct stat));
-		lstat(av->name, filestat[0]);
-		stat(av->name, filestat[1]);
+		if (lstat(av->name, filestat[0]) == -1
+		|| stat(av->name, filestat[1]) == -1)
+		{
+			write(1, "ls: ", 4);
+			perror(av->name);
+			return (0);
+		}
 		if (!S_ISDIR(filestat[sarg->ml]->st_mode))
 		{
 			ft_add_file_ns(file->begin->next, av->name, filestat, sarg);
-			if (file->begin->d_cnt != 0 && (av->name[0] != '.' || sarg->a == 1))
-				sarg->only_file = 0;
+			//if (file->begin->d_cnt != 0 && (av->name[0] != '.' || sarg->a == 1))
+			//	sarg->only_file = 0;
 			file->begin->f_cnt++;
 		}
 		else
@@ -41,8 +46,13 @@ int		ft_first_ls(t_file *av, struct l_file *file, struct l_file *dir, t_arg *sar
 	}
 	filestat[0] = (struct stat *)malloc(sizeof(struct stat));
 	filestat[1] = (struct stat *)malloc(sizeof(struct stat));
-	lstat(av->name, filestat[0]);
-	stat(av->name, filestat[1]);
+	if (lstat(av->name, filestat[0]) == -1
+	|| stat(av->name, filestat[1]) == -1)
+	{
+		write(1, "ls: ", 4);
+		perror(av->name);
+		return (0);
+	}
 	if (!S_ISDIR(filestat[sarg->ml]->st_mode))
 	{
 		ft_add_file_ns(file->begin->next, av->name, filestat, sarg);
@@ -68,8 +78,14 @@ int		ft_ls(char *path, struct l_file *lst, struct l_file *begin, t_arg *sarg)
 		return (0);
 	if (!(fd = opendir(path)))
 	{
-//		write(1, "ls: ", 4);
-//		perror(path);
+		if (sarg->single_arg == 0)
+		{
+			write(1, "\n./", 3);
+			write(1, path, ft_strlen(path));
+			write(1, ":\n", 2);
+		}
+		write(1, "ls: ", 4);
+		perror(path);
 		return (0);
 	}
 	filestat = (struct stat **)malloc(sizeof(struct stat *) * 2);
@@ -82,8 +98,12 @@ int		ft_ls(char *path, struct l_file *lst, struct l_file *begin, t_arg *sarg)
 		stat(tmppath, filestat[1]);
 		lst->begin->tmppath = tmppath;
 		if (ft_strcmp(".", stc->d_name) != 0
-		&& ft_strcmp("..", stc->d_name) != 0 && S_ISDIR(filestat[sarg->ml]->st_mode))
+		&& ft_strcmp("..", stc->d_name) != 0 && S_ISDIR(filestat[sarg->ml]->st_mode) && sarg->mr == 1)
+		{
 			ft_add_dir(lst->begin, stc, filestat, sarg);
+			sarg->only_file = 0;
+			sarg->single_arg = 0;
+		}
 		else
 			ft_add_file(lst->begin, stc, filestat, sarg);
 		lst->begin->path = path;
@@ -97,6 +117,8 @@ int		ft_ls(char *path, struct l_file *lst, struct l_file *begin, t_arg *sarg)
 		if (lst->id == 1)
 			ft_ls(ft_make_path(path, lst->name), lst->dir, lst->dir, sarg);
 		lst = lst->next;
+	//	if (lst != NULL)
+	//		write(1, "\n", 1);
 	}
 	closedir(fd);
 	return (1);
@@ -116,7 +138,8 @@ int		main(int ac, char **av)
 
 	repeat = 0;
 	cnt = 0;
-	ft_get_arg(ac, av, &arg);
+	if (ft_get_arg(ac, av, &arg) == -1)
+		return (1);
 	sarg.single_arg = 0;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
 	sarg.r = (ft_strchr(arg, 'r') != NULL ? 1 : -1);
@@ -182,5 +205,9 @@ int		main(int ac, char **av)
 		}
 	}
 	ft_free_tree(toread);
-	return (0);
+//	ft_free_tree(tr_file);
+//	ft_free_tree(tr_dir);
+	while (1)
+		;
+	return (1);
 }

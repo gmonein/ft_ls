@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/22 06:30:03 by marvin            #+#    #+#             */
-/*   Updated: 2017/01/31 09:05:54 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/02/02 16:35:28 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,9 +97,16 @@ void			print_name(t_file *lst, t_arg *sarg)
 	}
 }
 
+void			print_newline(t_file *lst, t_arg *sarg)
+{
+	if (sarg->a == 1 || lst->hide == 0)
+		write(1, "\n", 1);
+}
+
 void			new_l(t_file *lst, t_arg *sarg)
 {
-	ft_print_total(lst, sarg);
+	if (lst->begin->total != 0)
+		ft_print_total(lst, sarg);
 	while (lst->next != NULL && lst->next->name != NULL)
 	{
 		lst = lst->next;
@@ -110,8 +117,9 @@ void			new_l(t_file *lst, t_arg *sarg)
 		print_size(lst, sarg);
 		print_time(lst, sarg);
 		print_name(lst, sarg);
-		write(1, "\n", (lst->hide == 0 || sarg->a == 1 ? 1 : 0));
+		print_newline(lst, sarg);
 	}
+	//printf("\n---- %d ----\n", lst->begin->f_cnt + lst->begin->d_cnt - 2);
 }
 
 void			print_nl_b(t_file *lst, t_arg *sarg)
@@ -186,15 +194,15 @@ void			print_nl_b(t_file *lst, t_arg *sarg)
 	}
 	y = 0;
 	int		k;
-
 	while (tab[y])
 	{
 		k = size.ws_col - 1;
 		while(tab[y][k] == ' ')
 			k--;
 		write(1, tab[y], k + 1);
-		if (sarg->mc == 0 || (tab[y + 1] != NULL && tab[y + 2] != NULL))
+		if (sarg->mc == 0 && tab[y] != NULL && begin->f_cnt > 0)
 			write(1, "\n", 1);
+		begin->f_cnt--;
 		free(tab[y]);
 		y++;
 	}
@@ -245,12 +253,13 @@ void       ft_print(struct l_file *lst, t_arg *sarg)
 	{
 		if (sarg->single_arg != 1 || sarg->mr == 1)
 		{
-			if (first_line != 1)
+			if (first_line < 2)
 				first_line++;
-			else
-				write(1, "\n", 1);
-			if (lst->begin->p_path == 1 && (sarg->single_arg != 1 || first_line != 1))
+//			else
+//				write(1, "\n", 1);
+			if (lst->begin->p_path == 1 && first_line != 1)
 			{
+				write(1, "\n", 1);
 				write(1, lst->begin->path, ft_strlen(lst->begin->path));
 				write(1, ":\n", 2);
 			}
@@ -261,7 +270,7 @@ void       ft_print(struct l_file *lst, t_arg *sarg)
 		    new_l(lst, sarg);
 		else if (sarg->l != 1)
 			print_nl_b(lst, sarg);
-		if (sarg->only_file != 0 && sarg->mc == 1)
-			write(1, "\n", 1);
+//		if (sarg->only_file != 0 && sarg->mc == 1)
+//			write(1, "\n", 1);
 	}
 }

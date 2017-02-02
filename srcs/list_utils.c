@@ -6,7 +6,7 @@
 /*   By: gmonein <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/28 00:54:10 by gmonein           #+#    #+#             */
-/*   Updated: 2017/01/29 13:14:23 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/02/02 19:10:11 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,12 @@ struct l_file		*ft_init_lst(void)
 	lst = (struct l_file *)malloc(sizeof(struct l_file));
 	lst->name = NULL;
 	lst->next = NULL;
+	lst->sl_name = NULL;
+	lst->path = NULL;
+	lst->tmppath = NULL;
 	lst->dir = NULL;
 	lst->filestat = NULL;
+	lst->buf = NULL;
 	lst->len_name = 1;
 	lst->id = 0;
 	lst->isp = 0;
@@ -79,6 +83,7 @@ struct l_file		*ft_init_lst(void)
 	lst->p_path = 1;
 	lst->f_cnt = 0;
 	lst->d_cnt = 0;
+	lst->first_ls = 0;
 	lst->begin = lst;
 	return (lst);
 }
@@ -143,7 +148,8 @@ void	ft_add_assign(t_file *lst, char *name, struct stat **filestat, t_arg *sarg)
 		lst->begin->col_four = lst->col_four;
 	if ((lst->len_name = ft_strlen(lst->name)) > lst->begin->len_name)
 		lst->begin->len_name = lst->len_name;
-	lst->begin->total += lst->filestat[sarg->ml]->st_blocks;
+	if (lst->hide == 0 || sarg->a == 1)
+		lst->begin->total += lst->filestat[sarg->ml]->st_blocks;
 }
 
 void	ft_add_dir(t_file *lst, struct dirent *stc, struct stat **filestat, t_arg *sarg)
@@ -166,6 +172,7 @@ void	ft_add_dir(t_file *lst, struct dirent *stc, struct stat **filestat, t_arg *
 	lst->id = 1;
 	lst->stc = stc;
 	lst->dir->hide = ((stc->d_name[0] == '.' || lst->begin->hide == 1) ? 1 : 0);
+	lst->begin->d_cnt++;
 	ft_add_assign(lst, stc->d_name, filestat, sarg);
 }
 
@@ -186,6 +193,7 @@ void	ft_add_file(t_file *lst, struct dirent *stc, struct stat **filestat, t_arg 
 		lst = ft_bet_node(lst);
 	lst->id = 0;
 	lst->begin = tmp;
+	lst->begin->f_cnt++;
 	lst->dir = NULL;
 	ft_add_assign(lst, stc->d_name, filestat, sarg);
 }

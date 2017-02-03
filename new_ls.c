@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/16 18:52:51 by gmonein           #+#    #+#             */
-/*   Updated: 2017/02/02 19:21:43 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/02/03 18:31:09 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,10 +115,10 @@ int		ft_ls(char *path, struct l_file *lst, struct l_file *begin, t_arg *sarg)
 	while (lst != NULL && sarg->mr == 1)
 	{
 		if (lst->id == 1)
+		{
 			ft_ls(ft_make_path(path, lst->name), lst->dir, lst->dir, sarg);
+		}
 		lst = lst->next;
-	//	if (lst != NULL)
-	//		write(1, "\n", 1);
 	}
 	closedir(fd);
 	return (1);
@@ -135,11 +135,11 @@ int		main(int ac, char **av)
 	t_file			*tr_file;
 	t_file			*tr_dir;
 	t_arg			sarg;
+	int				dir_pos;
 
 	repeat = 0;
 	cnt = 0;
-	if (ft_get_arg(ac, av, &arg) == -1)
-		return (1);
+	dir_pos = ft_get_arg(ac, av, &arg);
 	sarg.single_arg = 0;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
 	sarg.r = (ft_strchr(arg, 'r') != NULL ? 1 : -1);
@@ -152,7 +152,7 @@ int		main(int ac, char **av)
 	sarg.single_folder = 1;
 	sarg.only_file = 1;
 	lst = ft_init_lst();
-	toread = ft_get_dir(ac, av, &sarg);
+	toread = ft_get_dir((ac - dir_pos), &av[dir_pos], &sarg);
 /*	printf("single_arg = %d\n", sarg.single_arg);
 	while (toread->next != NULL)
 	{
@@ -207,7 +207,5 @@ int		main(int ac, char **av)
 	ft_free_tree(toread);
 //	ft_free_tree(tr_file);
 //	ft_free_tree(tr_dir);
-	while (1)
-		;
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/22 06:30:03 by marvin            #+#    #+#             */
-/*   Updated: 2017/02/02 16:35:28 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/02/03 17:57:32 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void			print_name(t_file *lst, t_arg *sarg)
 	if (sarg->a == 1 || lst->hide == 0)
 	{
 		write(1, lst->name, ft_strlen(lst->name));
-		if (sarg->ml == 0 && lst->symb == 1)
+		if (sarg->ml == 0 && lst->symb == 1 && sarg->l == 1)
 		{
 			write(1, " -> ", 4);
 			write(1, lst->sl_name, ft_strlen(lst->sl_name));
@@ -105,7 +105,7 @@ void			print_newline(t_file *lst, t_arg *sarg)
 
 void			new_l(t_file *lst, t_arg *sarg)
 {
-	if (lst->begin->total != 0)
+	if (lst->begin->f_cnt > 2 || lst->begin->d_cnt > 0)
 		ft_print_total(lst, sarg);
 	while (lst->next != NULL && lst->next->name != NULL)
 	{
@@ -123,6 +123,19 @@ void			new_l(t_file *lst, t_arg *sarg)
 }
 
 void			print_nl_b(t_file *lst, t_arg *sarg)
+{
+	while (lst)
+	{
+		lst = lst->next;
+		if (lst && lst->name != NULL)
+		{
+			print_name(lst, sarg);
+			print_newline(lst, sarg);
+		}
+	}
+}
+
+void			print_nl_mc(t_file *lst, t_arg *sarg)
 {
 	int					col;
 	int					line;

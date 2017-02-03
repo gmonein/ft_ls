@@ -6,15 +6,16 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/12 11:29:33 by gmonein           #+#    #+#             */
-/*   Updated: 2017/01/29 13:02:00 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/02/03 17:23:11 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_LS_H
 # define FT_LS_H
 
-# define VALID_ARG	"CLlRart"
-# define ILL_OPT	"ls: illegal option -- "
+# define VALID_ARG	"1CLlRart"
+# define ILL_OPT	"/bin/ls: illegal option -- "
+# define USAGE		"usage: ls [-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1] [file ...]"
 # define INF_SPACE	"                                                         "
 
 # include <stdlib.h>
@@ -37,6 +38,7 @@ typedef struct		l_file
 	char			*sl_name;
 	char			*path;
 	char			*tmppath;
+	int				first_ls;
 	int				hide;
 	int				isp;
 	int				id;
@@ -63,6 +65,7 @@ typedef struct		s_arg
 	int			single_arg;
 	int			single_folder;
 	int			only_file;
+	int			tmp;
 	int			a;
 	int			l;
 	int			r;
@@ -72,7 +75,8 @@ typedef struct		s_arg
 	int			mc;
 }					t_arg;
 
-
+int					ft_ls_a(char *path, struct l_file *lst, struct l_file *begin, t_arg *sarg);
+int					ft_first_ls(t_file *av, struct l_file *file, struct l_file *dir, t_arg *sarg);
 char				*ft_strjoin_free(char *s1, char *s2, int a, int b);
 void				ft_dupe_lst(t_file *src, t_file *lst);
 void				*ft_memset(void *b, int c, size_t len);

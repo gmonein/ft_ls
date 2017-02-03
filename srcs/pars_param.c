@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/22 06:28:27 by marvin            #+#    #+#             */
-/*   Updated: 2017/02/02 13:56:46 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/02/03 18:34:13 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,18 @@ int					ft_get_arg(int ac, char **av, char **arg)
 	{
 		while (av[i][j] && av[i][0] == '-')
 		{
-			if (ft_strchr(VALID_ARG, av[i][j]) == NULL)
+			if (ft_strchr(VALID_ARG, av[i][j]) == NULL
+			&& ((av[i][1] != '-') || (av[i][1] == '-' && av[i][2] != '\0')))
 				return (ft_error(1, av[i][j]));
+			else if (av[i][1] == '-' && av[i][2] != '\0')
+				return (i + 1);
 			*arg = ft_stradd(*arg, av[i][j], 1);
 			j++;
 		}
 		j = 1;
 		i++;
 	}
-	return (1);
+	return (i - 1);
 }
 
 struct l_file		*ft_get_dir(int ac, char **av, t_arg *sarg)
@@ -47,8 +50,6 @@ struct l_file		*ft_get_dir(int ac, char **av, t_arg *sarg)
 	lst = ft_init_lst();
 	tmp = lst;
 	r = ac - 1;
-	while (av[i] && av[i][0] == '-')
-		i++;
 	sarg->single_arg = (ac - i > 1 ? 0 : 1);
 	lst->begin->elem = 0;
 	if (ac - i == 0 || ac == 1)

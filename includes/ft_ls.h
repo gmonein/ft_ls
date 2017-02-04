@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/12 11:29:33 by gmonein           #+#    #+#             */
-/*   Updated: 2017/02/03 17:23:11 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/02/03 19:18:15 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ typedef struct		s_arg
 	int			mc;
 }					t_arg;
 
+t_file		*pars(int ac, char **av, t_arg *sarg, char **arg);
 int					ft_ls_a(char *path, struct l_file *lst, struct l_file *begin, t_arg *sarg);
 int					ft_first_ls(t_file *av, struct l_file *file, struct l_file *dir, t_arg *sarg);
 char				*ft_strjoin_free(char *s1, char *s2, int a, int b);

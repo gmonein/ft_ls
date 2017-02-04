@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/16 18:52:51 by gmonein           #+#    #+#             */
-/*   Updated: 2017/02/03 18:31:09 by gmonein          ###   ########.fr       */
+/*   Updated: 2017/02/03 19:18:47 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,13 +135,12 @@ int		main(int ac, char **av)
 	t_file			*tr_file;
 	t_file			*tr_dir;
 	t_arg			sarg;
-	int				dir_pos;
 
 	repeat = 0;
 	cnt = 0;
-	dir_pos = ft_get_arg(ac, av, &arg);
 	sarg.single_arg = 0;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
+	toread = pars(ac, av, &sarg, &arg);
 	sarg.r = (ft_strchr(arg, 'r') != NULL ? 1 : -1);
 	sarg.a = (ft_strchr(arg, 'a') != NULL ? 1 : 0);
 	sarg.l = (ft_strchr(arg, 'l') != NULL ? 1 : 0);
@@ -152,7 +151,6 @@ int		main(int ac, char **av)
 	sarg.single_folder = 1;
 	sarg.only_file = 1;
 	lst = ft_init_lst();
-	toread = ft_get_dir((ac - dir_pos), &av[dir_pos], &sarg);
 /*	printf("single_arg = %d\n", sarg.single_arg);
 	while (toread->next != NULL)
 	{
@@ -160,7 +158,7 @@ int		main(int ac, char **av)
 		toread = toread->next;
 	}
 	printf("tr = %s\n", toread->name);
-*/	toread = toread->begin;
+*/	
 	tr_file = ft_init_lst();
 	tr_dir = ft_init_lst();
 	if ((toread->next != NULL && toread->next->next != NULL) || toread->begin->elem > 0)

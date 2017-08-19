@@ -1,6 +1,6 @@
 # include "ft_ls.h"
 
-static void	sort_by_ctime(t_ls_list *begin, t_param *param)
+static void	sort_by_mtime(t_ls_list *begin, t_param *param)
 {
 	t_ls_list	*lst;
 	void		*tmp;
@@ -12,8 +12,8 @@ static void	sort_by_ctime(t_ls_list *begin, t_param *param)
 		while (lst->next)
 		{
 			lst = lst->next;
-			if ((begin->content->filestat.st_ctime
-						< lst->content->filestat.st_ctime)
+			if ((begin->content->filestat.st_mtime
+						< lst->content->filestat.st_mtime)
 				^ param->reverse_sort)
 			{
 				tmp = lst->content;
@@ -50,7 +50,7 @@ static void	sort_by_name(t_ls_list *begin, t_param *param)
 void	sort_list(t_ls_list *begin, t_param *param)
 {
 	if (param->time_sort)
-		sort_by_ctime(begin, param);
+		sort_by_mtime(begin, param);
 	else
 		sort_by_name(begin, param);
 }

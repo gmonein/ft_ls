@@ -50,7 +50,7 @@ t_node		get_info(char *file, char *path, t_param *param)
 
 void		multi_puts(char *a, char *b)
 {
-	write(1, a, ft_strlen(a) - 1);
+	write(1, a, ft_strlen(a));
 	ft_putstr(b);
 }
 
@@ -64,12 +64,14 @@ t_ls_list	*read_directory(char *path, char *name, t_param *param)
 
 	errno = 0;
 	directory = opendir(make_path(path, name, 0));
-	if ((param->single_dir != 1 || param->recursive == 1) && (errno != ENOTDIR))
-		multi_puts(make_path(NULL, NULL, 1), ":\n");
 	if (!directory)
 	{
 		if (errno != ENOTDIR)
-		perror("");
+		{
+			ft_putstr_fd("ls: cannot open directory '", 2);
+			ft_putstr_fd(path, 2);
+			perror("'");
+		}
 		return (NULL);
 	}
 	res = (void *)ft_lstnew(NULL, 0);
@@ -103,6 +105,9 @@ int		is_hide(t_node *node)
 
 void	print_dir(t_ls_list *begin, t_param *param)
 {
+	int		line;
+
+	line = 0;
 	if (!begin)
 		return ;
 	sort_list(begin, param);
@@ -111,8 +116,10 @@ void	print_dir(t_ls_list *begin, t_param *param)
 		begin = begin->next;
 		if (param->show_hide == 1 || is_hide(begin->content) == 0)
 		{
+			if (line)
+				ft_putstr("\n");
 			ft_putstr(begin->content->name);
-			ft_putstr("\t");
+			line++;
 		}
 	}
 	ft_putstr("\n");
@@ -126,6 +133,10 @@ int		ls(char *path, t_param *param, int line)
 	dir = read_directory(path, NULL, param);
 	if (!dir)
 		return (0);
+	if (line)
+		ft_putstr("\n");
+	if ((param->single_dir != 1 || param->recursive == 1) && (errno != ENOTDIR))
+		multi_puts(path, "/:\n");
 	sort_list(dir, param);
 	print_dir(dir, param);
 	tmp = dir;
@@ -157,13 +168,15 @@ int		print_param(t_ls_list *lst, t_param *param)
 		if (errno == ENOTDIR)
 		{
 			if (tab != 0)
-				ft_putstr("\t");
+				ft_putstr("\n");
 			ft_putstr(lst->content->name);
 			tab++;
 		}
 		else
 			closedir(dir);
 	}
+	if (tab)
+		ft_putstr("\n");
 	return (tab ? 1 : 0);
 }
 

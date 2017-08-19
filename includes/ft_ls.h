@@ -53,5 +53,11 @@ t_ls_list	*read_params(t_param *param);
 void	free_lst(t_list *lst);
 t_node		get_info(char *file, char *path, t_param *param);
 void	sort_list(t_ls_list *begin, t_param *param);
-
+void		multi_puts(char *a, char *b);
+int		is_hide(t_node *node);
+int		to_open(t_node *node, t_param *param);
+int		print_param(t_ls_list *lst, t_param *param);
+void	print_dir(t_ls_list *begin, t_param *param);
+char		*make_path(char *path, char *name, int to_do);
+t_node		get_info(char *file, char *path, t_param *param);
 #endif

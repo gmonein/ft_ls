@@ -10,6 +10,8 @@ SOURCES = main.c \
 			parsing.c \
 			misc.c \
 			sort.c \
+			read.c \
+			print.c
 
 DIR_O = obj
 

@@ -8,7 +8,8 @@ HEADER = includes -L libft -I libft/includes/
 
 SOURCES = main.c \
 			parsing.c \
-			misc.c
+			misc.c \
+			sort.c \
 
 DIR_O = obj
 

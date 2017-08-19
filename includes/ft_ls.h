@@ -7,6 +7,7 @@
 # include <sys/stat.h>
 # include <limits.h>
 # include <unistd.h>
+# include <errno.h>
 
 typedef struct dirent t_dirent;
 typedef struct stat t_stat;
@@ -16,6 +17,7 @@ typedef struct			s_node
 	char				name[NAME_MAX];
 	char				path[PATH_MAX];
 	t_stat				filestat;
+	t_dirent			file_info;
 	struct s_ls_list	*dir;
 }						t_node;
 
@@ -36,6 +38,7 @@ typedef struct		s_param
 	char			recursive;
 	char			show_hide;
 	char			**file;
+	char			single_dir;
 	char			invalide_param;
 }					t_param;
 
@@ -49,5 +52,6 @@ int		get_params(char **gv, int len, t_param *param);
 t_ls_list	*read_params(t_param *param);
 void	free_lst(t_list *lst);
 t_node		get_info(char *file, char *path, t_param *param);
+void	sort_list(t_ls_list *begin, t_param *param);
 
 #endif

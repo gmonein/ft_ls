@@ -55,11 +55,13 @@ t_ls_list	*read_params(t_param *param)
 			buf = get_info(param->file[i], NULL, param);
 			lst->next = (void *)ft_lstnew(&buf, sizeof(t_node));
 			lst = lst->next;
+			param->single_dir = (i > 1 ? 1 : 0);
 		}
 	if (!param->file)
 	{
 		buf = get_info(".", NULL, param);
 		lst->next = (void *)ft_lstnew(&buf, sizeof(t_node));
+		param->single_dir = 1;
 	}
 	return (begin);
 }

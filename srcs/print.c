@@ -77,7 +77,7 @@ char	*create_line(t_node *node, t_param *param, size_t *indentation)
 	print_right(line_buffer, node);
 	ft_strlen(line_buffer);
 	i = 10;
-	i += put_with_indentation(&line_buffer[i], node->link, indentation[1]);
+	i += put_with_indentation(&line_buffer[i], node->link, indentation[1] + 1);
 	i += put_with_indentation(&line_buffer[i], node->usr_name, indentation[2]);
 	i += put_with_indentation(&line_buffer[i], node->grp_name, indentation[3] + 1);
 	i += put_with_indentation(&line_buffer[i], node->size, indentation[4] + 1);
@@ -165,7 +165,7 @@ int		print_param(t_ls_list *lst, t_param *param)
 			write(1, "\n", line);
 			if (param->file_info)
 			{
-				get_file_info(indentation, lst->content);
+				get_file_info(indentation, lst->content, param);
 				ft_putstr(create_line(lst->content, param, indentation));
 			}
 			else

@@ -73,5 +73,5 @@ void	print_dir(t_ls_list *begin, t_param *param, size_t *info);
 char		*make_path(char *path, char *name, int to_do);
 t_node		get_info(char *file, char *path, t_param *param);
 char	*buffer_uitoa(unsigned int nbr);
-void		get_file_info(size_t *info, t_node *node);
+void		get_file_info(size_t *info, t_node *node, t_param *param);
 #endif

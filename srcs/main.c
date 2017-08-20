@@ -11,7 +11,7 @@ void	*because_of_norm(char *path)
 	return (NULL);
 }
 
-void		get_file_info(size_t *info, t_node *node)
+void		get_file_info(size_t *info, t_node *node, t_param *param)
 {
 	struct group	*grp;
 	struct passwd	*user;
@@ -23,6 +23,7 @@ void		get_file_info(size_t *info, t_node *node)
 	ft_strcpy(node->grp_name, grp->gr_name);
 	ft_strcpy(node->size, buffer_uitoa(node->filestat.st_size));
 	ft_strcpy(node->link, buffer_uitoa(node->filestat.st_nlink));
+	if (param->show_hide == 1 || is_hide(node) == 0)
 	if (info[1] < ft_strlen(node->link))
 		info[1] = ft_strlen(node->link);
 	if (info[2] < ft_strlen(user->pw_name))
@@ -51,7 +52,7 @@ t_ls_list	*read_directory(char *path, char *name, t_param *param, size_t *info)
 	while ((file = readdir(directory)))
 	{
 		node = get_info(file->d_name, make_path(path, name, 0), param);
-		get_file_info(info, &node);
+		get_file_info(info, &node, param);
 		tmp->next = (void *)ft_lstnew(&node, sizeof(t_node));
 		tmp = tmp->next;
 	}
@@ -80,6 +81,7 @@ int		ls(char *path, t_param *param, int line)
 	t_ls_list	*tmp;
 	size_t		info[12];
 
+	write(1, "\n", line);
 	if (param->single_dir != 1)
 		triple_puts(path, ":", "\n");
 	param->single_dir = 0;
@@ -123,7 +125,7 @@ int		main(int argc, char **argv)
 				&& S_ISDIR(lst->content->filestat.st_mode))
 		{
 			write(1, "\n", (tab > 0 ? 1 : 0));
-			tab += ls(lst->content->name, &env.param, tab);
+			tab += ls(lst->content->name, &env.param, 0);
 		}
 	}
 	free_lst((void *)begin);

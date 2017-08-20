@@ -17,7 +17,8 @@ void		get_file_info(size_t *info, t_node *node, t_param *param)
 
 	grp = getgrgid(node->filestat.st_gid);
 	user = getpwuid(node->filestat.st_uid);
-	info[0] += node->filestat.st_blocks;
+	if (!S_ISLNK(node->filestat.st_mode))
+		info[0] += node->filestat.st_blocks;
 	ft_strcpy(node->usr_name, user->pw_name);
 	ft_strcpy(node->grp_name, grp->gr_name);
 	ft_strcpy(node->size, buffer_uitoa(node->filestat.st_size));
@@ -120,7 +121,7 @@ int		main(int argc, char **argv)
 	while (lst->next)
 	{
 		lst = lst->next;
-		if (!stat(lst->content->name, &lst->content->filestat)
+		if (!lstat(lst->content->name, &lst->content->filestat)
 				&& S_ISDIR(lst->content->filestat.st_mode))
 		{
 			write(1, "\n", (tab > 0 ? 1 : 0));

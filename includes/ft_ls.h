@@ -9,6 +9,12 @@
 # include <unistd.h>
 # include <errno.h>
 # include <stdio.h>
+# include <grp.h>
+# include <time.h>
+# include <pwd.h>
+
+# define MONTH (char*[12]){"Jan", "Feb", "Mar", "Apr", "May",\
+					"Jun", "Jul", "Aug", "Sep", "Oct", "Dec"}
 
 typedef struct dirent t_dirent;
 typedef struct stat t_stat;
@@ -41,6 +47,7 @@ typedef struct		s_param
 	char			**file;
 	char			single_dir;
 	char			invalide_param;
+	char			column;
 }					t_param;
 
 typedef struct		s_env

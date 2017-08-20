@@ -48,7 +48,7 @@ int		ls(char *path, t_param *param, int line)
 	if (line)
 		ft_putstr("\n");
 	if ((param->single_dir != 1 || param->recursive == 1) && (errno != ENOTDIR))
-		multi_puts(path, "/:\n");
+		multi_puts(path, ":\n");
 	sort_list(dir, param);
 	print_dir(dir, param);
 	tmp = dir;
@@ -56,7 +56,7 @@ int		ls(char *path, t_param *param, int line)
 		while (tmp->next)
 		{
 			tmp = tmp->next;
-			if (S_ISDIR(tmp->content->filestat.st_mode))
+			if ((tmp->content->filestat.st_mode & S_IFMT) == S_IFDIR)
 				if (to_open(tmp->content, param))
 					ls(tmp->content->path, param, 1);
 		}

@@ -8,6 +8,7 @@
 # include <limits.h>
 # include <unistd.h>
 # include <errno.h>
+# include <stdio.h>
 
 typedef struct dirent t_dirent;
 typedef struct stat t_stat;

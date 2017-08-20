@@ -58,9 +58,7 @@ int		ls(char *path, t_param *param, int line)
 			tmp = tmp->next;
 			if (S_ISDIR(tmp->content->filestat.st_mode))
 				if (to_open(tmp->content, param))
-				{
 					ls(tmp->content->path, param, 1);
-				}
 		}
 	free_lst((void *)dir);
 	return (1);

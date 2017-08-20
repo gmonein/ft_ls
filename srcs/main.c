@@ -1,4 +1,3 @@
-# include <stdio.h>
 # include "ft_ls.h"
 
 void	*because_of_norm(char *path)

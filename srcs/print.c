@@ -41,6 +41,7 @@ char	*get_date(time_t time)
 void	print_right(char *line_buffer, t_node *node)
 {
 	line_buffer[0] = (S_ISDIR(node->filestat.st_mode)) ? 'd' : '-';
+	line_buffer[0] = (S_ISLNK(node->filestat.st_mode)) ? 'l' : line_buffer[0];
 	line_buffer[1] = (node->filestat.st_mode & S_IRUSR) ? 'r' : '-';
 	line_buffer[2] = (node->filestat.st_mode & S_IWUSR) ? 'w' : '-';
 	line_buffer[3] = (node->filestat.st_mode & S_IXUSR) ? 'x' : '-';
@@ -81,9 +82,20 @@ char	*create_line(t_node *node, t_param *param, size_t *indentation)
 	i += put_with_indentation(&line_buffer[i], node->usr_name, indentation[2]);
 	i += put_with_indentation(&line_buffer[i], node->grp_name, indentation[3] + 1);
 	i += put_with_indentation(&line_buffer[i], node->size, indentation[4] + 1);
-	ft_strcat(line_buffer, get_date(node->filestat.st_mtime));
-	ft_strcat(line_buffer, " ");
-	ft_strcat(line_buffer, node->name);
+	ft_strcpy(&line_buffer[i], get_date(node->filestat.st_mtime));
+	i += 13;
+	line_buffer[i] = ' ';
+	i++;
+	ft_strcpy(&line_buffer[i], node->name);
+	i += ft_strlen(&line_buffer[i]);
+	if (S_ISLNK(node->filestat.st_mode))
+	{
+		line_buffer[i++] = ' ';
+		line_buffer[i++] = '-';
+		line_buffer[i++] = '>';
+		line_buffer[i++] = ' ';
+		readlink(node->path, &line_buffer[i], NAME_MAX);
+	}
 	return (line_buffer);
 }
 

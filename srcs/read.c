@@ -33,7 +33,7 @@ t_node		get_info(char *file, char *path, t_param *param)
 		ft_strcpy(res.path, make_path(path, file, 0));
 	else
 		ft_strcpy(res.path, make_path("./", NULL, 0));
-	ret = stat(make_path(NULL, NULL, 1), &res.filestat);
+	ret = lstat(make_path(NULL, NULL, 1), &res.filestat);
 	if (ret)
 	{
 		bzero(error_buffer, sizeof(error_buffer));
@@ -42,5 +42,7 @@ t_node		get_info(char *file, char *path, t_param *param)
 		perror(error_buffer);
 	}
 	res.dir = NULL;
+	if (param->file_info)
+		return (res);
 	return (res);
 }

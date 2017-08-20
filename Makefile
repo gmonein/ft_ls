@@ -2,9 +2,11 @@ NAME = ft_ls
 
 CPP = clang
 
-CFLAGS = -O3 -g3 -fsanitize=address
+CFLAGS = -g3 -fsanitize=address
 
-HEADER = includes -L libft -I libft/includes/
+DIR_LIB = srcs/libft/
+
+HEADER = includes -I $(DIR_LIB)/includes/
 
 SOURCES = main.c \
 			parsing.c \
@@ -13,25 +15,33 @@ SOURCES = main.c \
 			read.c \
 			print.c
 
-DIR_O = obj
+DIR_O = objs
 
 DIR_S = srcs
 
 SRCS = $(addprefix $(DIR_S)/,$(SOURCES))
 OBJS = $(addprefix $(DIR_O)/,$(SOURCES:.c=.o))
 
-all: obj $(NAME)
+all: $(NAME)
 
-${NAME}: $(OBJS)
-	${CPP} $(CFLAGS) -o $@ $^ libft/libft.a
+${NAME}: $(DIR_O) $(OBJS)
+	make -C $(DIR_LIB)
+	${CPP} $(CFLAGS) -o $@ $(OBJS) $(DIR_LIB)/libft.a
 
 $(DIR_O)/%.o: $(DIR_S)/%.c
 	$(CPP) $(CFLAGS) -I $(HEADER) -c -o $@ $<
 
-obj:
-	mkdir -p obj
+$(DIR_O):
+	mkdir -p $(DIR_O)
 
-clean:	
-	rm -rf obj
+clean:
+	make clean -C $(DIR_LIB)
+	rm -rf $(OBJS)
 
-.PHONY: all $(NAME)
+fclean: clean
+	make fclean -C $(DIR_LIB)
+	rm -rf $(NAME)
+
+re: fclean all
+
+.PHONY : fclean clean

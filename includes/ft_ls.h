@@ -23,6 +23,10 @@ typedef struct			s_node
 {
 	char				name[NAME_MAX];
 	char				path[PATH_MAX];
+	char				link[21];
+	char				usr_name[NAME_MAX];
+	char				grp_name[NAME_MAX];
+	char				size[21];
 	t_stat				filestat;
 	t_dirent			file_info;
 	struct s_ls_list	*dir;
@@ -65,7 +69,9 @@ void		multi_puts(char *a, char *b);
 int		is_hide(t_node *node);
 int		to_open(t_node *node, t_param *param);
 int		print_param(t_ls_list *lst, t_param *param);
-void	print_dir(t_ls_list *begin, t_param *param);
+void	print_dir(t_ls_list *begin, t_param *param, size_t *info);
 char		*make_path(char *path, char *name, int to_do);
 t_node		get_info(char *file, char *path, t_param *param);
+char	*buffer_uitoa(unsigned int nbr);
+void		get_file_info(size_t *info, t_node *node);
 #endif

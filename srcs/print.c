@@ -30,19 +30,11 @@ char	*buffer_uitoa(unsigned int nbr)
 
 char	*get_date(time_t time)
 {
-	static char	res[13];
-	struct tm	instant;
-	int			i;
+	static char	res[64];
 
-	instant.tm_sec = time;
 	res[0] = ' ';
-	res[1] = '\0';
-	ft_strcat(res, MONTH[instant.tm_mon]);
-	ft_strcat(res, buffer_uitoa(instant.tm_mday + 1) - 1);
-	ft_strcat(res, buffer_uitoa(instant.tm_hour) - 1);
-	ft_strcat(res, ":");
-	ft_strcat(res, buffer_uitoa(instant.tm_min));
-	i = -1;
+	ft_strcpy(&res[1], &ctime(&time)[4]);
+	res[13] = '\0';
 	return (res);
 }
 
@@ -59,31 +51,43 @@ void	print_right(char *line_buffer, t_node *node)
 	line_buffer[8] = (node->filestat.st_mode & S_IWOTH) ? 'w' : '-';
 	line_buffer[9] = (node->filestat.st_mode & S_IXOTH) ? 'x' : '-';
 	line_buffer[10] = ' ';
+	line_buffer[11] = '\0';
 }
-char	*create_line(t_node *node, t_param *param, int *indentation)
+
+int		put_with_indentation(char *dst, char *str, int max)
+{
+	int		len;
+	int		i;
+
+	len = ft_strlen(str);
+	i = -1;
+	while (++i + len <= max)
+		dst[i] = ' ';
+	ft_strcpy(&dst[i], str);
+	return (max + 1);
+}
+
+char	*create_line(t_node *node, t_param *param, size_t *indentation)
 {
 	static char		line_buffer[1024];
 	int				i;
-	struct group	*grp;
-	struct passwd	*user;
 
-	grp = getgrgid(node->filestat.st_gid);
-	user = getpwuid(node->filestat.st_uid);
+	if (!node)
+		return (NULL);
 	print_right(line_buffer, node);
-	ft_strcpy(&line_buffer[11], buffer_uitoa(node->filestat.st_nlink));
-	ft_strcat(line_buffer, " ");
-	ft_strcat(line_buffer, user->pw_name);
-	ft_strcat(line_buffer, " ");
-	ft_strcat(line_buffer, grp->gr_name);
-	ft_strcat(line_buffer, " ");
-	ft_strcat(line_buffer, buffer_uitoa(node->filestat.st_size));
+	ft_strlen(line_buffer);
+	i = 10;
+	i += put_with_indentation(&line_buffer[i], node->link, indentation[1]);
+	i += put_with_indentation(&line_buffer[i], node->usr_name, indentation[2]);
+	i += put_with_indentation(&line_buffer[i], node->grp_name, indentation[3] + 1);
+	i += put_with_indentation(&line_buffer[i], node->size, indentation[4] + 1);
 	ft_strcat(line_buffer, get_date(node->filestat.st_mtime));
 	ft_strcat(line_buffer, " ");
 	ft_strcat(line_buffer, node->name);
 	return (line_buffer);
 }
 
-void	print_with_info(t_ls_list *begin, t_param *param)
+void	print_with_info(t_ls_list *begin, t_param *param, size_t *info)
 {
 	int		line;
 
@@ -93,7 +97,7 @@ void	print_with_info(t_ls_list *begin, t_param *param)
 		if (param->show_hide == 1 || is_hide(begin->content) == 0)
 		{
 			write(1, "\n", line);
-			ft_putstr(create_line(begin->content, param, NULL));
+			ft_putstr(create_line(begin->content, param, info));
 			line |= 1;
 		}
 	}
@@ -124,13 +128,13 @@ void	simple_print(t_ls_list *begin, t_param *param)
 	ft_putstr("\n");
 }
 
-void	print_dir(t_ls_list *begin, t_param *param)
+void	print_dir(t_ls_list *begin, t_param *param, size_t *info)
 {
 	if (!begin)
 		return ;
 	sort_list(begin, param);
 	if (param->file_info)
-		print_with_info(begin, param);
+		print_with_info(begin, param, info);
 	else if (param->column)
 		print_column(begin, param);
 	else
@@ -141,24 +145,33 @@ int		print_param(t_ls_list *lst, t_param *param)
 {
 	int			line;
 	DIR			*dir;
+	int			ret;
+	t_ls_list	*begin;
+	size_t		indentation[12];
 
 	line = 0;
+	begin = lst;
+	while (begin->next && (begin = begin->next))
+		if (stat(begin->content->name, &begin->content->filestat))
+		{
+			ft_putstr_fd("ls: ", 2);
+			perror(begin->content->name);
+		}
+	ft_bzero(indentation, sizeof(indentation));
 	while (lst->next && (lst = lst->next))
-	{
-		errno = 0;
-		dir = opendir(lst->content->name);
-		if (errno == ENOTDIR)
+		if (!(ret = stat(lst->content->name, &lst->content->filestat))
+				&& !S_ISDIR(lst->content->filestat.st_mode))
 		{
 			write(1, "\n", line);
 			if (param->file_info)
-				ft_putstr(create_line(lst->content, param, NULL));
+			{
+				get_file_info(indentation, lst->content);
+				ft_putstr(create_line(lst->content, param, indentation));
+			}
 			else
 				ft_putstr(lst->content->name);
 			line |= 1;
 		}
-		else
-			closedir(dir);
-	}
 	write(1, "\n", line);
 	return (line);
 }

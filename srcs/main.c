@@ -66,16 +66,23 @@ void	triple_puts(char *a, char *b, char*c)
 	ft_putstr(c);
 }
 
+void	quad_puts(char *a, char *b, char *c, char *d)
+{
+	ft_putstr(a);
+	ft_putstr(b);
+	ft_putstr(c);
+	ft_putstr(d);
+}
+
 int		ls(char *path, t_param *param, int line)
 {
 	t_ls_list	*dir;
 	t_ls_list	*tmp;
 	size_t		info[12];
 
-	if ((param->single_dir != 1 || param->recursive == 1))
-		triple_puts("\n", path, ":");
-	if (line)
-		ft_putstr("\n");
+	if (param->single_dir != 1)
+		triple_puts(path, ":", "\n");
+	param->single_dir = 0;
 	dir = read_directory(path, NULL, param, info);
 	if (!dir)
 		return (0);

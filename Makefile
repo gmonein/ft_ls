@@ -2,7 +2,7 @@ NAME = ft_ls
 
 CPP = clang
 
-CFLAGS = -Ofast -fsanitize=address -g3
+CFLAGS = -Ofast -march=native
 
 DIR_LIB = srcs/libft/
 

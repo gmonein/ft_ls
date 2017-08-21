@@ -2,7 +2,7 @@ NAME = ft_ls
 
 CPP = clang
 
-CFLAGS = -g3 -fsanitize=address
+CFLAGS = -Ofast -fsanitize=address -g3
 
 DIR_LIB = srcs/libft/
 
@@ -13,7 +13,9 @@ SOURCES = main.c \
 			misc.c \
 			sort.c \
 			read.c \
-			print.c
+			print.c \
+			puts.c \
+			print_misc.c \
 
 DIR_O = objs
 

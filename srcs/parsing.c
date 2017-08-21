@@ -1,4 +1,16 @@
-# include "ft_ls.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gmonein <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/08/21 03:22:10 by gmonein           #+#    #+#             */
+/*   Updated: 2017/08/21 03:22:35 by gmonein          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "ft_ls.h"
 
 static int		print_error(char *str, char invalid_param)
 {
@@ -11,7 +23,7 @@ static int		print_error(char *str, char invalid_param)
 	return (-1);
 }
 
-static int	translate_param(t_param *param, char *str)
+static int		translate_param(t_param *param, char *str)
 {
 	int		i;
 
@@ -39,7 +51,7 @@ static int	translate_param(t_param *param, char *str)
 	return (1);
 }
 
-t_ls_list	*read_params(t_param *param)
+t_ls_list		*read_params(t_param *param)
 {
 	t_ls_list		*begin;
 	t_ls_list		*lst;
@@ -66,7 +78,7 @@ t_ls_list	*read_params(t_param *param)
 	return (begin);
 }
 
-int		get_params(char **gv, int len, t_param *param)
+int				get_params(char **gv, int len, t_param *param)
 {
 	int			i;
 

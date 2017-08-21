@@ -74,4 +74,10 @@ char		*make_path(char *path, char *name, int to_do);
 t_node		get_info(char *file, char *path, t_param *param);
 char	*buffer_uitoa(unsigned int nbr);
 void		get_file_info(size_t *info, t_node *node, t_param *param);
+void	quad_puts(char *a, char *b, char *c, char *d);
+void	triple_puts(char *a, char *b, char *c);
+char	*buffer_uitoa(unsigned int nbr);
+char	*get_date(time_t time);
+int		put_with_indentation(char *dst, char *str, int max);
+void	print_right(char *line_buffer, t_node *node);
 #endif

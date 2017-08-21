@@ -1,8 +1,21 @@
-# include "ft_ls.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   read.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gmonein <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/08/21 03:23:06 by gmonein           #+#    #+#             */
+/*   Updated: 2017/08/21 03:23:54 by gmonein          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "ft_ls.h"
+
 char		*make_path(char *path, char *name, int to_do)
 {
 	static char	path_buffer[NAME_MAX + PATH_MAX];
-	int		len;
+	int			len;
 
 	if (to_do == 1)
 		return (path_buffer);
@@ -18,6 +31,7 @@ char		*make_path(char *path, char *name, int to_do)
 		ft_strcpy(&path_buffer[len], name);
 	return (path_buffer);
 }
+
 t_node		get_info(char *file, char *path, t_param *param)
 {
 	t_node		res;

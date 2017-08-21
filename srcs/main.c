@@ -1,6 +1,18 @@
-# include "ft_ls.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gmonein <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/08/21 03:13:47 by gmonein           #+#    #+#             */
+/*   Updated: 2017/08/21 04:35:36 by gmonein          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void	*because_of_norm(char *path)
+#include "ft_ls.h"
+
+void		*because_of_norm(char *path)
 {
 	if (errno != ENOTDIR)
 	{
@@ -24,17 +36,20 @@ void		get_file_info(size_t *info, t_node *node, t_param *param)
 	ft_strcpy(node->size, buffer_uitoa(node->filestat.st_size));
 	ft_strcpy(node->link, buffer_uitoa(node->filestat.st_nlink));
 	if (param->show_hide == 1 || is_hide(node) == 0)
-	if (info[1] < ft_strlen(node->link))
-		info[1] = ft_strlen(node->link);
-	if (info[2] < ft_strlen(user->pw_name))
-		info[2] = ft_strlen(user->pw_name);
-	if (info[3] < ft_strlen(grp->gr_name))
-		info[3] = ft_strlen(grp->gr_name);
-	if (info[4] < ft_strlen(node->size))
-		info[4] = ft_strlen(node->size);
+	{
+		if (info[1] < ft_strlen(node->link))
+			info[1] = ft_strlen(node->link);
+		if (info[2] < ft_strlen(user->pw_name))
+			info[2] = ft_strlen(user->pw_name);
+		if (info[3] < ft_strlen(grp->gr_name))
+			info[3] = ft_strlen(grp->gr_name);
+		if (info[4] < ft_strlen(node->size))
+			info[4] = ft_strlen(node->size);
+	}
 }
 
-t_ls_list	*read_directory(char *path, char *name, t_param *param, size_t *info)
+t_ls_list	*read_directory(char *path, char *name, t_param *param,
+																size_t *info)
 {
 	DIR				*directory;
 	t_ls_list		*res;
@@ -60,31 +75,15 @@ t_ls_list	*read_directory(char *path, char *name, t_param *param, size_t *info)
 	return (res);
 }
 
-void	triple_puts(char *a, char *b, char*c)
-{
-	ft_putstr(a);
-	ft_putstr(b);
-	ft_putstr(c);
-}
-
-void	quad_puts(char *a, char *b, char *c, char *d)
-{
-	ft_putstr(a);
-	ft_putstr(b);
-	ft_putstr(c);
-	ft_putstr(d);
-}
-
-int		ls(char *path, t_param *param, int line)
+int			ls(char *path, t_param *param, int line)
 {
 	t_ls_list	*dir;
 	t_ls_list	*tmp;
 	size_t		info[12];
 
 	write(1, "\n", line);
-	if (param->single_dir != 1)
+	if (param->single_dir != 1 || (param->single_dir = 0) == 1)
 		triple_puts(path, ":", "\n");
-	param->single_dir = 0;
 	dir = read_directory(path, NULL, param, info);
 	if (!dir)
 		return (0);
@@ -105,7 +104,7 @@ int		ls(char *path, t_param *param, int line)
 	return (1);
 }
 
-int		main(int argc, char **argv)
+int			main(int argc, char **argv)
 {
 	t_env		env;
 	int			tab;
@@ -115,6 +114,8 @@ int		main(int argc, char **argv)
 	if (get_params(&argv[1], argc - 1, &env.param) == -1)
 		return (1);
 	lst = read_params(&env.param);
+	if (!lst)
+		return (1);
 	sort_list(lst, &env.param);
 	begin = lst;
 	tab = print_param(lst, &env.param);

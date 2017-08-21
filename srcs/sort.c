@@ -1,4 +1,16 @@
-# include "ft_ls.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   sort.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gmonein <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/08/21 03:24:10 by gmonein           #+#    #+#             */
+/*   Updated: 2017/08/21 04:15:39 by gmonein          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "ft_ls.h"
 
 static void	sort_by_mtime(t_ls_list *begin, t_param *param)
 {
@@ -11,11 +23,13 @@ static void	sort_by_mtime(t_ls_list *begin, t_param *param)
 		lst = begin;
 		while (lst->next && (lst = lst->next))
 		{
-			res = lst->content->filestat.st_mtime - begin->content->filestat.st_mtime;
+			res = lst->content->filestat.st_mtime
+										- begin->content->filestat.st_mtime;
 			if ((res > 0) ^ param->reverse_sort || res == 0)
 			{
 				if ((res == 0 &&
-				((ft_strcmp(lst->content->name, begin->content->name) < 0) ^ param->reverse_sort))
+				((ft_strcmp(lst->content->name, begin->content->name) < 0)
+														^ param->reverse_sort))
 				|| res != 0)
 				{
 					tmp = lst->content;
@@ -51,8 +65,10 @@ static void	sort_by_name(t_ls_list *begin, t_param *param)
 	}
 }
 
-void	sort_list(t_ls_list *begin, t_param *param)
+void		sort_list(t_ls_list *begin, t_param *param)
 {
+	if (!begin)
+		return ;
 	if (param->time_sort)
 		sort_by_mtime(begin, param);
 	else

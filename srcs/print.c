@@ -17,7 +17,7 @@ char	*create_line(t_node *node, t_param *param, size_t *indentation)
 	static char		line_buffer[1024];
 	int				i;
 
-	if (!node)
+	if (!node || !param)
 		return (NULL);
 	print_right(line_buffer, node);
 	i = 10;
@@ -71,7 +71,7 @@ void	print_dir(t_ls_list *begin, t_param *param, size_t *info)
 
 void	print_error_dir(t_ls_list *begin, t_param *param)
 {
-	if (!begin)
+	if (!begin || !param)
 		return ;
 	while (begin->next && (begin = begin->next))
 		if (stat(begin->content->name, &begin->content->filestat))
@@ -84,7 +84,6 @@ void	print_error_dir(t_ls_list *begin, t_param *param)
 int		print_param(t_ls_list *lst, t_param *param)
 {
 	int			line;
-	DIR			*dir;
 	size_t		indentation[12];
 
 	if (!lst)

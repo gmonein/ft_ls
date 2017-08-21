@@ -45,7 +45,6 @@ static void	sort_by_name(t_ls_list *begin, t_param *param)
 {
 	t_ls_list	*lst;
 	void		*tmp;
-	int			res;
 
 	while (begin->next)
 	{

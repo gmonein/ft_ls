@@ -2,11 +2,11 @@ NAME = ft_ls
 
 CPP = clang
 
-CFLAGS = -Ofast -march=native
+CFLAGS = -Ofast -march=native -Wall -Wextra -Werror -Weverything
 
 DIR_LIB = srcs/libft/
 
-HEADER = includes -I $(DIR_LIB)/includes/
+HEADER = -I includes -I $(DIR_LIB)/includes/
 
 SOURCES = main.c \
 			parsing.c \
@@ -31,7 +31,7 @@ ${NAME}: $(DIR_O) $(OBJS)
 	${CPP} $(CFLAGS) -o $@ $(OBJS) $(DIR_LIB)/libft.a
 
 $(DIR_O)/%.o: $(DIR_S)/%.c
-	$(CPP) $(CFLAGS) -I $(HEADER) -c -o $@ $<
+	$(CPP) $(CFLAGS) $(HEADER) -c -o $@ $<
 
 $(DIR_O):
 	mkdir -p $(DIR_O)
@@ -39,11 +39,10 @@ $(DIR_O):
 clean:
 	make clean -C $(DIR_LIB)
 	rm -rf $(OBJS)
+	rm -rf $(DIR_O)
 
 fclean: clean
 	make fclean -C $(DIR_LIB)
 	rm -rf $(NAME)
 
 re: fclean all
-
-.PHONY : fclean clean

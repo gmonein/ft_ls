@@ -17,7 +17,7 @@ void		get_file_info(size_t *info, t_node *node, t_param *param)
 
 	grp = getgrgid(node->filestat.st_gid);
 	user = getpwuid(node->filestat.st_uid);
-	if (!S_ISLNK(node->filestat.st_mode))
+	//if (!S_ISLNK(node->filestat.st_mode))
 		info[0] += node->filestat.st_blocks;
 	ft_strcpy(node->usr_name, user->pw_name);
 	ft_strcpy(node->grp_name, grp->gr_name);

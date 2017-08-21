@@ -2,23 +2,26 @@
 
 static void	sort_by_mtime(t_ls_list *begin, t_param *param)
 {
-	t_ls_list	*lst;
-	void		*tmp;
+	t_ls_list		*lst;
+	void			*tmp;
+	long			res;
 
-	while (begin->next)
+	while (begin->next && (begin = begin->next))
 	{
-		begin = begin->next;
 		lst = begin;
-		while (lst->next)
+		while (lst->next && (lst = lst->next))
 		{
-			lst = lst->next;
-			if ((begin->content->filestat.st_mtime
-						< lst->content->filestat.st_mtime)
-				^ param->reverse_sort)
+			res = lst->content->filestat.st_mtime - begin->content->filestat.st_mtime;
+			if ((res > 0) ^ param->reverse_sort || res == 0)
 			{
-				tmp = lst->content;
-				lst->content = begin->content;
-				begin->content = tmp;
+				if ((res == 0 &&
+				((ft_strcmp(lst->content->name, begin->content->name) < 0) ^ param->reverse_sort))
+				|| res != 0)
+				{
+					tmp = lst->content;
+					lst->content = begin->content;
+					begin->content = tmp;
+				}
 			}
 		}
 	}
@@ -28,6 +31,7 @@ static void	sort_by_name(t_ls_list *begin, t_param *param)
 {
 	t_ls_list	*lst;
 	void		*tmp;
+	int			res;
 
 	while (begin->next)
 	{
